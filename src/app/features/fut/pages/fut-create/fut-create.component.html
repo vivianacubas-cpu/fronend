@@ -1,0 +1,529 @@
+<div class="page fut-page">
+  <div class="page-heading">
+    <span class="eyebrow">Trámite institucional · Canal digital</span>
+    <h1>Formulario Único de Trámite</h1>
+    <p>
+      Completa la información para presentar tu solicitud a la I. E. N.° 20191
+      “Alfonso Ugarte”. Los campos marcados como (Obligatorio) deben
+      completarse.
+    </p>
+  </div>
+  <section *ngIf="result" class="card success-card" role="status">
+    <span class="status">Solicitud registrada</span>
+    <h2>¡Tu trámite fue enviado!</h2>
+    <p>
+      La solicitud se registró en el sistema institucional. Guarda el código
+      para consultar el estado de tu trámite.
+    </p>
+    <div class="tracking-code">
+      <span>Código de seguimiento</span
+      ><strong>{{ result.trackingCode }}</strong
+      ><button type="button" class="button secondary" (click)="copyCode()">
+        Copiar código
+      </button>
+    </div>
+    <p><b>Estado inicial:</b> {{ result.status }}</p>
+    <div class="notice error-box" *ngIf="attachmentWarning" role="alert">{{ attachmentWarning }}</div>
+    <div class="actions">
+      <button type="button" class="button" (click)="reset()">
+        Registrar otra solicitud</button
+      ><button type="button" class="button secondary" (click)="downloadPdf()" [disabled]="!receiptPdf">
+        Descargar constancia PDF</button
+      ><button type="button" class="button secondary" (click)="printReceipt()">
+        Imprimir comprobante
+      </button>
+    </div>
+  </section>
+  <form
+    *ngIf="!result"
+    class="card fut-form"
+    [formGroup]="form"
+    (ngSubmit)="review()"
+    novalidate
+  >
+    <div class="form-section">
+      <div class="field">
+        <label for="tramite"
+          >Trámite a Realizar <span>(Obligatorio)</span>:</label
+        >
+        <select id="tramite" formControlName="tramite">
+          <option value="">[SELECCIONAR TRÁMITE]</option>
+          <option *ngFor="let t of tramites" [value]="t">{{ t }}</option>
+          <option [value]="OTROS">OTROS</option>
+        </select>
+        <span class="error" *ngIf="invalid('tramite')"
+          >Selecciona el trámite a realizar.</span
+        >
+      </div>
+      <div class="field" *ngIf="form.value.tramite === OTROS">
+        <label for="tramiteOtro"
+          >Especifique otro trámite
+          <span class="tag">(Obligatorio)</span>:</label
+        >
+        <input
+          id="tramiteOtro"
+          formControlName="tramiteOtro"
+          maxlength="150"
+          placeholder="Escribe el trámite que deseas realizar"
+        />
+        <span class="error" *ngIf="invalid('tramiteOtro')"
+          >Especifica el trámite.</span
+        >
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-grid three">
+        <div class="field">
+          <label for="tipoSolicitante"
+            >Tipo Solicitante <span class="tag">(Obligatorio)</span>:</label
+          >
+          <select id="tipoSolicitante" formControlName="tipoSolicitante">
+            <option value="">[SELECCIONAR TIPO SOLICITANTE]</option>
+            <option *ngFor="let s of solicitantes" [value]="s">{{ s }}</option>
+            <option [value]="OTROS">OTROS</option>
+          </select>
+          <span class="error" *ngIf="invalid('tipoSolicitante')"
+            >Selecciona el tipo de solicitante.</span
+          >
+        </div>
+        <div class="field">
+          <label for="tipoDocumento"
+            >Tipo de Documento <span class="tag">(Obligatorio)</span>:</label
+          >
+          <select id="tipoDocumento" formControlName="tipoDocumento">
+            <option value="">[SELECCIONAR TIPO DOCUMENTO]</option>
+            <option *ngFor="let d of tiposDocumento" [value]="d">
+              {{ d }}
+            </option>
+          </select>
+          <span class="error" *ngIf="invalid('tipoDocumento')"
+            >Selecciona el tipo de documento.</span
+          >
+        </div>
+        <div class="field">
+          <label for="numeroDocumento"
+            >Número de Documento <span class="tag">(Obligatorio)</span>:</label
+          >
+          <input
+            id="numeroDocumento"
+            formControlName="numeroDocumento"
+            [attr.maxlength]="form.value.tipoDocumento === 'CNE' ? 12 : 8"
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            class="button secondary sol-buscar-btn"
+            (click)="buscarSolicitante()"
+            [disabled]="buscandoSolicitante"
+          >{{ buscandoSolicitante ? "Buscando…" : "Buscar solicitante" }}</button>
+          <span class="error" *ngIf="invalid('numeroDocumento')">{{
+            form.value.tipoDocumento === "CNE"
+              ? "El CNE debe tener entre 9 y 12 caracteres alfanuméricos."
+              : "El DNI debe contener exactamente 8 dígitos numéricos."
+          }}</span>
+        </div>
+        <div class="field full sol-lookup-result">
+          <div
+            *ngIf="solicitanteMensaje"
+            class="notice"
+            [class.error-box]="solicitanteError"
+            role="status"
+          >{{ solicitanteMensaje }}</div>
+          <div class="actions" *ngIf="solicitanteNoEncontrado">
+            <button
+              type="button"
+              class="button"
+              (click)="abrirRegistroSolicitante()"
+            >Registrar solicitante</button>
+          </div>
+          <div class="actions" *ngIf="solicitanteInactivo">
+            <a class="button secondary" routerLink="/admin/solicitantes">Ir a Gestión de Solicitantes</a>
+          </div>
+        </div>
+        <div class="field full" *ngIf="form.value.tipoSolicitante === OTROS">
+          <label for="tipoSolicitanteOtro"
+            >Especifique otro tipo de solicitante
+            <span class="tag">(Obligatorio)</span>:</label
+          >
+          <input
+            id="tipoSolicitanteOtro"
+            formControlName="tipoSolicitanteOtro"
+            maxlength="100"
+            placeholder="Ej. Exalumno, apoderado..."
+          />
+          <span class="error" *ngIf="invalid('tipoSolicitanteOtro')"
+            >Especifica el tipo de solicitante.</span
+          >
+        </div>
+        <div class="field">
+          <label for="apPaterno"
+            >Apellido Paterno <span class="tag">(Obligatorio)</span>:</label
+          ><input
+            id="apPaterno"
+            formControlName="apellidoPaterno"
+            maxlength="80"
+            autocomplete="family-name"
+          /><span class="error" *ngIf="invalid('apellidoPaterno')"
+            >Ingresa el apellido paterno.</span
+          >
+        </div>
+        <div class="field">
+          <label for="apMaterno"
+            >Apellido Materno <span class="tag">(Obligatorio)</span>:</label
+          ><input
+            id="apMaterno"
+            formControlName="apellidoMaterno"
+            maxlength="80"
+          /><span class="error" *ngIf="invalid('apellidoMaterno')"
+            >Ingresa el apellido materno.</span
+          >
+        </div>
+        <div class="field">
+          <label for="nombres"
+            >Nombres <span class="tag">(Obligatorio)</span>:</label
+          ><input
+            id="nombres"
+            formControlName="nombres"
+            maxlength="100"
+            autocomplete="given-name"
+          /><span class="error" *ngIf="invalid('nombres')"
+            >Ingresa tus nombres.</span
+          >
+        </div>
+        <div class="field">
+          <label for="departamento"
+            >Departamento <span class="tag">(Obligatorio)</span>:</label
+          >
+          <select
+            id="departamento"
+            formControlName="departamento"
+            (change)="onDepartamento()"
+          >
+            <option value="">[SELECCIONAR DEPARTAMENTO]</option>
+            <option *ngFor="let d of departamentos" [value]="d">{{ d }}</option>
+          </select>
+          <span class="error" *ngIf="invalid('departamento')"
+            >Selecciona el departamento.</span
+          >
+        </div>
+        <div class="field">
+          <label for="provincia"
+            >Provincia <span class="tag">(Obligatorio)</span>:</label
+          >
+          <select
+            id="provincia"
+            formControlName="provincia"
+            *ngIf="provinciasList; else provTxt"
+            (change)="onProvincia()"
+          >
+            <option value="">[SELECCIONAR PROVINCIA]</option>
+            <option *ngFor="let p of provinciasList" [value]="p">
+              {{ p }}
+            </option>
+          </select>
+          <ng-template #provTxt
+            ><input
+              id="provincia"
+              formControlName="provincia"
+              maxlength="100"
+              placeholder="Escribe la provincia"
+              (input)="onProvincia()"
+          /></ng-template>
+          <span class="error" *ngIf="invalid('provincia')"
+            >Indica la provincia.</span
+          >
+        </div>
+        <div class="field">
+          <label for="distrito"
+            >Distrito <span class="tag">(Obligatorio)</span>:</label
+          >
+          <select
+            id="distrito"
+            formControlName="distrito"
+            *ngIf="distritosList; else distTxt"
+          >
+            <option value="">[SELECCIONAR DISTRITO]</option>
+            <option *ngFor="let d of distritosList" [value]="d">{{ d }}</option>
+          </select>
+          <ng-template #distTxt
+            ><input
+              id="distrito"
+              formControlName="distrito"
+              maxlength="100"
+              placeholder="Escribe el distrito"
+          /></ng-template>
+          <span class="error" *ngIf="invalid('distrito')"
+            >Indica el distrito.</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="field">
+        <label for="direccion"
+          >Dirección <span class="tag">(Obligatorio)</span>:</label
+        ><input
+          id="direccion"
+          formControlName="direccion"
+          maxlength="250"
+          autocomplete="street-address"
+        /><span class="error" *ngIf="invalid('direccion')"
+          >Ingresa tu dirección.</span
+        >
+      </div>
+      <div class="field">
+        <label for="numeroDepto"
+          >N° y/o Departamento <span class="tag">(Opcional)</span>:</label
+        ><input id="numeroDepto" formControlName="numeroDepto" maxlength="50" />
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="telefonoFijo"
+            >Teléfono Fijo <span class="tag">(Opcional)</span>:</label
+          ><input
+            id="telefonoFijo"
+            formControlName="telefonoFijo"
+            maxlength="9"
+            inputmode="numeric"
+            autocomplete="tel-national"
+          /><span class="error" *ngIf="invalid('telefonoFijo')"
+            >Ingresa entre 6 y 9 dígitos.</span
+          >
+        </div>
+        <div class="field">
+          <label for="celular"
+            >Celular <span class="tag">(Obligatorio)</span>:</label
+          ><input
+            id="celular"
+            formControlName="celular"
+            maxlength="9"
+            inputmode="numeric"
+            autocomplete="tel"
+          /><span class="error" *ngIf="invalid('celular')"
+            >Ingresa un celular válido: 9 dígitos que empiecen con 9.</span
+          >
+        </div>
+      </div>
+      <div class="field">
+        <label for="email"
+          >Correo Electrónico
+          <span class="tag"
+            >(Obligatorio: El correo se guardará como dato del solicitante; el código de seguimiento se mostrará en pantalla.)</span
+          >:</label
+        ><input
+          id="email"
+          type="email"
+          formControlName="email"
+          maxlength="150"
+          autocomplete="email"
+        /><span class="error" *ngIf="invalid('email')"
+          >Ingresa un correo electrónico válido.</span
+        >
+      </div>
+      <div class="field">
+        <label for="basis"
+          >Fundamentación de la solicitud:
+          <span class="tag"
+            >(Obligatorio) <small>(Máximo 255 Caracteres)</small></span
+          ></label
+        ><textarea
+          id="basis"
+          formControlName="basis"
+          maxlength="255"
+          rows="3"
+        ></textarea>
+        <div class="field-meta">
+          <span class="error" *ngIf="invalid('basis')"
+            >Explica el fundamento de tu solicitud.</span
+          ><small
+            >{{ form.controls.basis.value?.length || 0 }}/255 caracteres</small
+          >
+        </div>
+      </div>
+      <div class="field">
+        <label for="docs"
+          >Documentos que se adjuntan:
+          <span class="tag"
+            >(Opcional) <small>(Máximo 255 Caracteres)</small></span
+          ></label
+        ><textarea
+          id="docs"
+          formControlName="attachedDocuments"
+          maxlength="255"
+          rows="3"
+        ></textarea>
+        <div class="field-meta">
+          <span></span
+          ><small
+            >{{ form.controls.attachedDocuments.value?.length || 0 }}/255
+            caracteres</small
+          >
+        </div>
+      </div>
+      <div class="field">
+        <label for="archivo"
+          >Documentos Adjuntos Digital
+          <span class="tag"
+            >(Opcional)
+            <small>(PDF o imagen JPG/PNG/WEBP, máximo 4MB)</small></span
+          ></label
+        >
+        <input
+          id="archivo"
+          type="file"
+          accept="application/pdf,image/jpeg,image/png,image/webp,.pdf,.jpg,.jpeg,.png,.webp"
+          (change)="onFile($event)"
+        />
+        <small class="hint"
+          >Seleccione un archivo PDF o una imagen (<b>.pdf, .jpg, .png</b>)<span *ngIf="file">
+            · {{ file.name }} ({{
+              file.size / 1024 / 1024 | number: "1.1-2"
+            }}
+            MB)</span
+          ></small
+        >
+        <span class="error" *ngIf="fileError">{{ fileError }}</span>
+      </div>
+      <div class="field">
+        <label for="folios"
+          >Folios <span class="tag">(Obligatorio)</span>:</label
+        ><input
+          id="folios"
+          type="number"
+          min="0"
+          step="1"
+          formControlName="folios"
+        /><span class="error" *ngIf="invalid('folios')"
+          >Ingresa un número de folios válido.</span
+        >
+      </div>
+    </div>
+    <div *ngIf="error" class="notice error-box" role="alert">{{ error }}</div>
+    <div class="form-footer">
+      <p>Revisa los datos antes de confirmar el envío.</p>
+      <button type="submit" class="button" [disabled]="loading">
+        Revisar y enviar solicitud <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </form>
+  <div *ngIf="reviewing && !result" class="modal-backdrop" role="presentation">
+    <section
+      class="review-modal card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="review-title"
+    >
+      <span class="eyebrow">Última revisión</span>
+      <h2 id="review-title">Confirma los datos de tu solicitud</h2>
+      <p>Verifica la información. Todavía puedes volver para corregirla.</p>
+      <div class="review-grid">
+        <div class="full">
+          <small>Trámite a realizar</small>
+          <p>{{ tramiteFinal }}</p>
+        </div>
+        <div>
+          <small>Tipo de solicitante</small>
+          <p>{{ solicitanteFinal }}</p>
+        </div>
+        <div>
+          <small>{{ form.value.tipoDocumento }}</small>
+          <p>{{ form.value.numeroDocumento }}</p>
+        </div>
+        <div class="full">
+          <small>Solicitante</small>
+          <p>{{ nombreCompleto }}</p>
+        </div>
+        <div class="full">
+          <small>Dirección</small>
+          <p>
+            {{ form.value.direccion
+            }}<span *ngIf="form.value.numeroDepto">
+              - {{ form.value.numeroDepto }}</span
+            >, {{ form.value.distrito }}, {{ form.value.provincia }},
+            {{ form.value.departamento }}
+          </p>
+        </div>
+        <div>
+          <small>Teléfono fijo</small>
+          <p>{{ form.value.telefonoFijo || "No indicado" }}</p>
+        </div>
+        <div>
+          <small>Celular</small>
+          <p>{{ form.value.celular || "No indicado" }}</p>
+        </div>
+        <div class="full">
+          <small>Correo electrónico</small>
+          <p>{{ form.value.email }}</p>
+        </div>
+        <div class="full">
+          <small>Fundamentación</small>
+          <p>{{ form.value.basis }}</p>
+        </div>
+        <div>
+          <small>Documentos que se adjuntan</small>
+          <p>{{ form.value.attachedDocuments || "Ninguno declarado" }}</p>
+        </div>
+        <div>
+          <small>Archivo adjunto / Folios</small>
+          <p>{{ file?.name || "Sin archivo adjunto" }} · {{ form.value.folios }} folio(s)</p>
+        </div>
+      </div>
+      <div *ngIf="error" class="notice error-box" role="alert">{{ error }}</div>
+      <div class="actions modal-actions">
+        <button
+          type="button"
+          class="button secondary"
+          (click)="backToEdit()"
+          [disabled]="loading"
+        >
+          Volver a editar</button
+        ><button
+          type="button"
+          class="button"
+          (click)="submit()"
+          [disabled]="loading"
+        >
+          {{ loading ? "Guardando…" : "Confirmar y guardar" }}
+        </button>
+      </div>
+      <small class="hint"
+        >La solicitud se enviará al sistema institucional. Solo se mostrará la
+        confirmación cuando el backend responda correctamente.</small
+      >
+    </section>
+  </div>
+
+  <!--
+    Modal de registro de solicitante desde el FUT.
+    Se abre sin perder los datos ya ingresados en el formulario.
+    Al guardar, los campos personales del FUT se completan automáticamente.
+  -->
+  <div
+    *ngIf="mostrarRegistroSolicitante && !result"
+    class="modal-backdrop"
+    role="presentation"
+  >
+    <section
+      class="review-modal card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sol-reg-title"
+    >
+      <span class="eyebrow">Maestro solicitante</span>
+      <h2 id="sol-reg-title">Registrar solicitante</h2>
+      <p class="hint">
+        Completa los datos del solicitante. Al guardar, se rellenarán los
+        campos personales del FUT y podrás continuar con la solicitud.
+      </p>
+      <app-solicitante-form
+        [preset]="presetSolicitante"
+        [tiposDocumento]="tiposDocumentoCatalogo"
+        [saving]="solicitanteSaving"
+        [saveError]="solicitanteSaveError"
+        submitLabel="Guardar solicitante"
+        (submitted)="guardarSolicitante($event)"
+        (cancel)="cerrarRegistroSolicitante()"
+      ></app-solicitante-form>
+    </section>
+  </div>
+</div>

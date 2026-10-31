@@ -1,0 +1,251 @@
+<!-- PANEL ADMINISTRATIVO — SOLICITUDES FUT -->
+<div class="adm-content">
+
+    <!-- Breadcrumb -->
+    <nav class="adm-breadcrumb">
+      <a routerLink="/">Inicio</a>
+      <span>›</span>
+      <a routerLink="/admin/tramites">Acceso administrativo</a>
+      <span>›</span>
+      <span class="adm-breadcrumb--active">Solicitudes FUT</span>
+    </nav>
+
+    <!-- Título del módulo -->
+    <h1 class="adm-page-title">Solicitudes FUT</h1>
+    <div class="adm-page-underline"></div>
+    <p class="adm-page-desc">
+      Consulta, administra y realiza el seguimiento de las solicitudes FUT registradas en la institución.
+    </p>
+
+    <!-- Tarjetas estadísticas -->
+    <div class="adm-stats-grid">
+
+      <div class="adm-stat-card adm-stat-card--total">
+        <div class="adm-stat-card__ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="adm-stat-card__body">
+          <span class="adm-stat-card__label">TOTAL DE SOLICITUDES</span>
+          <strong class="adm-stat-card__value">{{ rows.length }}</strong>
+        </div>
+      </div>
+
+      <div class="adm-stat-card adm-stat-card--pending">
+        <div class="adm-stat-card__ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="adm-stat-card__body">
+          <span class="adm-stat-card__label">PENDIENTES</span>
+          <strong class="adm-stat-card__value">{{ count("RECIBIDO") + count("PENDIENTE") }}</strong>
+        </div>
+      </div>
+
+      <div class="adm-stat-card adm-stat-card--review">
+        <div class="adm-stat-card__ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8"  x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="adm-stat-card__body">
+          <span class="adm-stat-card__label">EN REVISION</span>
+          <strong class="adm-stat-card__value">{{ count("EN_REVISION") + count("EN REVISION") }}</strong>
+        </div>
+      </div>
+
+      <div class="adm-stat-card adm-stat-card--observed">
+        <div class="adm-stat-card__ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+          </svg>
+        </div>
+        <div class="adm-stat-card__body">
+          <span class="adm-stat-card__label">OBSERVADAS</span>
+          <strong class="adm-stat-card__value">{{ count("OBSERVADO") + count("OBSERVADA") }}</strong>
+        </div>
+      </div>
+
+      <div class="adm-stat-card adm-stat-card--done">
+        <div class="adm-stat-card__ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="adm-stat-card__body">
+          <span class="adm-stat-card__label">ATENDIDAS</span>
+          <strong class="adm-stat-card__value">{{ count("ATENDIDO") + count("ATENDIDA") }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Panel de solicitudes -->
+    <section class="adm-panel">
+
+      <div class="adm-panel__head">
+        <div class="adm-panel__head-left">
+          <div class="adm-panel__head-ico" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#760018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div>
+            <p class="adm-panel__title">Listado de solicitudes FUT</p>
+            <p class="adm-panel__desc">Revisa el detalle, estado y seguimiento de las solicitudes registradas.</p>
+          </div>
+        </div>
+        <div class="adm-panel__head-actions">
+          <button class="adm-btn adm-btn--outline" type="button" (click)="toggleDeleted()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            </svg>
+            {{ showDeleted ? "Ver activas" : "Ver eliminadas" }}
+          </button>
+          <button class="adm-btn adm-btn--outline" type="button" (click)="load()" [disabled]="loading">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+            </svg>
+            {{ loading ? "..." : "Actualizar" }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="adm-filters" *ngIf="!showDeleted">
+        <div class="adm-filter-group">
+          <label class="adm-filter-label">BUSCAR</label>
+          <div class="adm-search-wrap">
+            <svg class="adm-search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input [(ngModel)]="query" (ngModelChange)="applyFilters()" placeholder="Codigo, solicitante o asunto" />
+          </div>
+        </div>
+        <div class="adm-filter-group">
+          <label class="adm-filter-label">ESTADO</label>
+          <select [(ngModel)]="status" (ngModelChange)="load()">
+            <option value="">Todos los estados</option>
+            <option value="RECIBIDO">Pendiente / recibido</option>
+            <option value="EN_REVISION">En revision</option>
+            <option value="OBSERVADO">Observado</option>
+            <option value="ATENDIDO">Atendido</option>
+            <option value="NO_PROCEDE">Rechazado / no procede</option>
+          </select>
+        </div>
+        <div class="adm-filter-group">
+          <label class="adm-filter-label">DESDE</label>
+          <input type="date" [(ngModel)]="fromDate" (ngModelChange)="applyFilters()" />
+        </div>
+        <div class="adm-filter-group">
+          <label class="adm-filter-label">HASTA</label>
+          <input type="date" [(ngModel)]="toDate" (ngModelChange)="applyFilters()" />
+        </div>
+        <div class="adm-filter-group adm-filter-group--btn">
+          <label class="adm-filter-label">&nbsp;</label>
+          <button class="adm-btn adm-btn--primary" type="button" (click)="applyFilters()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Buscar
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="notice error-box" role="alert">{{ error }}</div>
+
+      <!-- Tabla -->
+      <div class="adm-table-wrap">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th class="adm-th-num">#</th>
+              <th>CODIGO</th>
+              <th>FECHA</th>
+              <th>SOLICITANTE</th>
+              <th>TIPO DE TRAMITE</th>
+              <th>ASUNTO</th>
+              <th>ESTADO</th>
+              <th>ACC.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="!showDeleted">
+              <tr *ngFor="let r of filtered; let i = index">
+                <td class="adm-td-num">{{ i + 1 }}</td>
+                <td><strong class="adm-td-code">{{ r.trackingCode || "—" }}</strong></td>
+                <td class="adm-td-date">{{ (r.createdAt || r.declaredDate) | date:"dd/MM/yyyy" }}</td>
+                <td>{{ r.fullName || r.solicitante || "—" }}</td>
+                <td>{{ r.tipoTramite || "—" }}</td>
+                <td class="adm-td-subject">{{ r.solicitante || r.basis || "—" }}</td>
+                <td>
+                  <span class="adm-status-badge" [ngClass]="'adm-status--' + (info(r.status).css)">
+                    {{ info(r.status).label }}
+                  </span>
+                </td>
+                <td>
+                  <div class="adm-row-actions">
+                    <a class="adm-ico adm-ico--view" [routerLink]="['/admin/tramites', r.id]" title="Ver detalle">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                    <a class="adm-ico adm-ico--edit" [routerLink]="['/admin/tramites', r.id]" title="Editar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <button class="adm-ico adm-ico--del" type="button" (click)="remove(r)" title="Eliminar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!filtered.length && !loading">
+                <td colspan="8" class="adm-empty">
+                  {{ rows.length ? "Sin resultados para los filtros seleccionados." : "No hay solicitudes registradas." }}
+                </td>
+              </tr>
+              <tr *ngIf="loading">
+                <td colspan="8" class="adm-empty">Cargando solicitudes...</td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="showDeleted">
+              <tr *ngFor="let r of filtered; let i = index">
+                <td class="adm-td-num">{{ i + 1 }}</td>
+                <td><strong class="adm-td-code">{{ r.trackingCode || "—" }}</strong></td>
+                <td class="adm-td-date">{{ (r.createdAt || r.declaredDate) | date:"dd/MM/yyyy" }}</td>
+                <td>{{ r.fullName || r.solicitante || "—" }}</td>
+                <td>{{ r.tipoTramite || "—" }}</td>
+                <td class="adm-td-subject">{{ r.solicitante || r.basis || "—" }}</td>
+                <td><span class="adm-status-badge adm-status--st-rejected">Eliminado</span></td>
+                <td>
+                  <div class="adm-row-actions">
+                    <button class="adm-ico adm-ico--rst" type="button" (click)="restore(r)" title="Restaurar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!filtered.length && !loading">
+                <td colspan="8" class="adm-empty">No hay solicitudes eliminadas.</td>
+              </tr>
+              <tr *ngIf="loading">
+                <td colspan="8" class="adm-empty">Cargando...</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+</div>
