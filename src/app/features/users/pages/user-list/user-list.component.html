@@ -1,0 +1,62 @@
+<div class="page">
+  <a routerLink="/admin/tramites">← Volver a gestión de trámites</a>
+  <span class="eyebrow">Área privada · Administración</span>
+  <div class="admin-title-row">
+    <div>
+      <h1>Cuentas administrativas</h1>
+      <p>Gestión de usuarios con acceso al panel de administración del sistema FUT.</p>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="admin-table-heading" style="padding: 24px 28px;">
+      <div>
+        <h2>Roles del sistema</h2>
+        <p>Los siguientes roles tienen acceso al panel administrativo.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rol</th>
+            <th>Descripción</th>
+            <th>Acceso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-badge st-done">DIRECTORA</span></td>
+            <td>Directora de la institución educativa</td>
+            <td>Panel completo de trámites, solicitantes y reportes</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge st-review">SECRETARIA</span></td>
+            <td>Secretaria administrativa</td>
+            <td>Panel completo de trámites, solicitantes y reportes</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge st-received">ADMIN</span></td>
+            <td>Administrador del sistema</td>
+            <td>Acceso total al sistema</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice" style="margin: 20px 28px;">
+      <strong>Gestión de cuentas:</strong> La creación, modificación y desactivación de cuentas
+      administrativas se realiza directamente en SQL Server mediante el procedimiento documentado.
+      Los hashes de contraseñas se generan con BCrypt a través del endpoint
+      <code>GET /v1/api/hash?password=...</code> (uso interno del equipo de desarrollo).
+    </div>
+
+    <div class="actions" style="padding: 0 28px 24px;">
+      <a class="button secondary" routerLink="/admin/tramites">Gestión de trámites</a>
+      <a class="button secondary" routerLink="/admin/solicitantes">Solicitantes</a>
+      <a class="button secondary" routerLink="/admin/tipo-tramite">Tipos de trámite</a>
+      <a class="button secondary" routerLink="/admin/reportes">Resumen administrativo</a>
+    </div>
+  </section>
+</div>

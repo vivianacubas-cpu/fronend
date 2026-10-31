@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.angular/
+.env
+
+mail-server/.env
+mail-server/node_modules

@@ -1,0 +1,195 @@
+<div class="page admin-page admin-detail">
+  <a routerLink="/admin/tramites">← Volver al listado</a>
+  <div *ngIf="error && !item" class="notice error-box" role="alert">
+    {{ error }}
+  </div>
+  <section *ngIf="item" class="card">
+    <div class="detail-head">
+      <div>
+        <span class="eyebrow">Detalle del trámite</span>
+        <h1>{{ item.trackingCode }}</h1>
+        <small class="muted-label"
+          >Registrado el
+          {{
+            item.createdAt || item.declaredDate | date: "dd/MM/yyyy, h:mm a"
+          }}</small
+        >
+      </div>
+      <div class="actions">
+        <span class="status-badge" [ngClass]="info.css">{{ info.label }}</span>
+      </div>
+    </div>
+
+    <div class="actions" *ngIf="!editing">
+      <button class="button secondary" (click)="startEdit()">
+        Editar datos de la solicitud</button
+      ><button class="button danger" (click)="remove()">
+        Eliminar solicitud
+      </button>
+    </div>
+
+    <div *ngIf="editing" class="edit-grid">
+      <div class="field">
+        <label>Trámite solicitado</label
+        ><textarea [(ngModel)]="item.solicitante" maxlength="500"></textarea>
+      </div>
+      <div class="field">
+        <label>Apellidos y nombres</label
+        ><input [(ngModel)]="item.fullName" maxlength="200" />
+      </div>
+      <div class="field">
+        <label>Documento de identidad</label
+        ><input [(ngModel)]="item.dni" maxlength="12" />
+      </div>
+      <div class="field">
+        <label>Correo electrónico</label
+        ><input type="email" [(ngModel)]="item.email" maxlength="150" />
+      </div>
+      <div class="field">
+        <label>Celular / teléfono</label
+        ><input [(ngModel)]="item.cellphone" maxlength="9" />
+      </div>
+      <div class="field">
+        <label>Dirección</label
+        ><input [(ngModel)]="item.address" maxlength="250" />
+      </div>
+      <div class="field">
+        <label>Distrito</label
+        ><input [(ngModel)]="item.district" maxlength="100" />
+      </div>
+      <div class="field">
+        <label>Provincia</label
+        ><input [(ngModel)]="item.province" maxlength="100" />
+      </div>
+      <div class="field">
+        <label>Fundamentación</label
+        ><textarea [(ngModel)]="item.basis" maxlength="2000"></textarea>
+      </div>
+      <div class="field">
+        <label>Documentos que se adjuntan</label
+        ><textarea
+          [(ngModel)]="item.attachedDocuments"
+          maxlength="1000"
+        ></textarea>
+      </div>
+      <div class="field">
+        <label>Fecha declarada</label
+        ><input type="date" [(ngModel)]="item.declaredDate" />
+      </div>
+      <div class="field">
+        <label>Nota adicional</label
+        ><input [(ngModel)]="item.signatureNote" maxlength="500" />
+      </div>
+      <div class="actions">
+        <button class="button" (click)="saveEdit()">Guardar edición</button
+        ><button class="button secondary" (click)="editing = false">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <dl *ngIf="!editing" class="detail-grid">
+      <div class="full">
+        <dt>Trámite solicitado</dt>
+        <dd>{{ item.tipoTramite || item.solicitante }}</dd>
+      </div>
+      <div>
+        <dt>Solicitante</dt>
+        <dd>{{ item.fullName }}</dd>
+      </div>
+      <div>
+        <dt>Documento</dt>
+        <dd>
+          {{ item.tipoDocumento ? item.tipoDocumento + " · " : ""
+          }}{{ item.dni }}
+        </dd>
+      </div>
+      <div *ngIf="item.tipoSolicitante">
+        <dt>Tipo de solicitante</dt>
+        <dd>{{ item.tipoSolicitante }}</dd>
+      </div>
+      <div>
+        <dt>Correo electrónico</dt>
+        <dd>{{ item.email || "No indicado" }}</dd>
+      </div>
+      <div>
+        <dt>Celular</dt>
+        <dd>{{ item.cellphone || "No indicado" }}</dd>
+      </div>
+      <div class="full">
+        <dt>Dirección</dt>
+        <dd>{{ item.address }}, {{ item.district }}, {{ item.province }}</dd>
+      </div>
+      <div class="full">
+        <dt>Fundamentación</dt>
+        <dd>{{ item.basis }}</dd>
+      </div>
+      <div>
+        <dt>Documentos que se adjuntan</dt>
+        <dd>{{ item.attachedDocuments || "No indicados" }}</dd>
+      </div>
+      <div *ngIf="item.folios != null">
+        <dt>Folios</dt>
+        <dd>{{ item.folios }}</dd>
+      </div>
+      <div>
+        <dt>Fecha declarada</dt>
+        <dd>{{ item.declaredDate | date: "longDate" }}</dd>
+      </div>
+    </dl>
+
+    <h2 class="section-title">Documento adjunto</h2>
+    <div *ngIf="attachment" class="attachment-box">
+      <p><b>{{ attachment.name }}</b> · {{ attachment.size / 1024 / 1024 | number: "1.1-2" }} MB</p>
+      <img *ngIf="attachment.isImage" [src]="attachment.url" [alt]="attachment.name" class="attachment-img" />
+      <iframe *ngIf="attachment.isPdf" [src]="attachment.safeUrl" class="attachment-pdf" title="Vista previa del PDF adjunto"></iframe>
+      <div class="actions">
+        <a class="button secondary" [href]="attachment.url" target="_blank" rel="noopener">Abrir en pestaña nueva</a>
+        <a class="button secondary" [href]="attachment.url" [attr.download]="attachment.name">Descargar</a>
+      </div>
+    </div>
+    <p *ngIf="!attachment && !attachmentError">El solicitante no adjuntó ningún archivo.</p>
+    <div *ngIf="attachmentError" class="notice error-box" role="alert">{{ attachmentError }}</div>
+
+    <h2 class="section-title">Gestión administrativa</h2>
+    <div class="edit-grid">
+      <div class="field">
+        <label for="status">Estado</label
+        ><select id="status" [(ngModel)]="status">
+          <option value="RECIBIDO">Recibido</option>
+          <option value="EN_REVISION">En revisión</option>
+          <option value="OBSERVADO">Observado</option>
+          <option value="ATENDIDO">Atendido</option>
+          <option value="RECHAZADO">No procede / Rechazado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="observation">Observación administrativa</label
+        ><textarea
+          id="observation"
+          [(ngModel)]="observation"
+          maxlength="1000"
+        ></textarea>
+      </div>
+    </div>
+    <div *ngIf="error" class="notice error-box" role="alert">{{ error }}</div>
+    <div *ngIf="message" class="notice" role="status">{{ message }}</div>
+    <p class="hint">La actualización se guarda en el sistema y queda registrada en el historial de seguimiento.</p>
+    <button class="button" (click)="save()" >Actualizar estado</button>
+
+    <h2 class="section-title">Historial de cambios</h2>
+    <div class="timeline">
+      <ul>
+        <li *ngFor="let h of item.history">
+          <span class="tl-date">{{
+            h.changedAt | date: "dd/MM/yyyy h:mm a"
+          }}</span
+          ><span class="tl-text"
+            >{{ h.oldStatus || "Nuevo" }} → {{ h.newStatus }}</span
+          ><span *ngIf="h.observation"> — {{ h.observation }}</span>
+        </li>
+        <li *ngIf="!item.history?.length">Sin modificaciones registradas.</li>
+      </ul>
+    </div>
+  </section>
+</div>

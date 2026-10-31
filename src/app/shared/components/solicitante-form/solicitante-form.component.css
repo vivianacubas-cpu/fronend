@@ -1,0 +1,3 @@
+/* El formulario reutiliza las clases globales de formulario
+   (.form-grid, .field, .actions, .notice, .error, .tag, .hint, .button) de src/styles.css.
+   Sin estilos adicionales por ahora para mantener la coherencia visual. */

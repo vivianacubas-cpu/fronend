@@ -1,0 +1,1749 @@
+
+/* ========================================
+   DISEÑO ELEGANTE — SISTEMA FUT
+   I.E. N.° 20191 "Alfonso Ugarte"
+======================================== */
+
+:root {
+  --fut-burgundy: #760018;
+  --fut-burgundy-dark: #49000f;
+  --fut-red: #a20b20;
+  --fut-gold: #e5bd45;
+  --fut-gold-light: #fff1bd;
+  --fut-cream: #fffaf3;
+  --fut-white: #ffffff;
+  --fut-text: #34272a;
+  --fut-muted: #796b70;
+  --fut-border: #eadfe0;
+  --fut-shadow: 0 12px 35px rgba(73, 0, 15, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--fut-cream);
+  color: var(--fut-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--fut-burgundy);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+}
+
+p {
+  overflow-wrap: anywhere;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+a {
+  color: var(--fut-burgundy);
+  text-underline-offset: 4px;
+}
+
+a:hover {
+  color: var(--fut-red);
+}
+
+::selection {
+  background: var(--fut-gold-light);
+  color: var(--fut-burgundy-dark);
+}
+
+/* Contenido principal */
+
+.page {
+  width: min(100% - 40px, 1120px);
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.eyebrow {
+  color: var(--fut-burgundy);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.page-heading {
+  max-width: 760px;
+  margin: 0 auto 32px;
+}
+
+.page-heading h1 {
+  margin: 10px 0 14px;
+}
+
+.page-heading p,
+.admin-title-row p {
+  color: var(--fut-muted);
+}
+
+/* Botones */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 13px 22px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    var(--fut-burgundy),
+    var(--fut-red)
+  );
+  color: var(--fut-white);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(118, 0, 24, 0.16);
+}
+
+.button:hover {
+  background: var(--fut-burgundy-dark);
+  color: var(--fut-white);
+  transform: translateY(-2px);
+  box-shadow: 0 9px 20px rgba(118, 0, 24, 0.2);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button.secondary {
+  background: var(--fut-white);
+  color: var(--fut-burgundy);
+  border-color: #e8d6aa;
+  box-shadow: none;
+}
+
+.button.secondary:hover {
+  background: var(--fut-gold-light);
+  border-color: var(--fut-gold);
+  color: var(--fut-burgundy-dark);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Tarjetas */
+
+.card {
+  padding: clamp(20px, 3vw, 32px);
+  background: var(--fut-white);
+  border: 1px solid var(--fut-border);
+  border-radius: 16px;
+  box-shadow: var(--fut-shadow);
+  animation: fut-appear 0.45s ease both;
+}
+
+/* Formulario */
+
+.fut-form {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(22px, 4vw, 40px);
+}
+
+.form-section {
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--fut-border);
+}
+
+.form-section:last-of-type {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.section-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 44px;
+  border: 1px solid #f0dfad;
+  border-radius: 13px;
+  background: #fff6df;
+  color: var(--fut-burgundy);
+  font-weight: 800;
+}
+
+.section-heading h2 {
+  margin: 2px 0 5px;
+  font-size: 1.2rem;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--fut-muted);
+  font-size: 0.9rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 16px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.form-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.field label .tag {
+  color: #9a9a9a;
+  font-weight: 600;
+}
+
+.field label .tag small {
+  font-size: 0.75rem;
+  color: inherit;
+}
+
+.field label {
+  color: var(--fut-burgundy);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.field label span {
+  color: var(--fut-red);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #dfd0d3;
+  border-radius: 9px;
+  background: #fffefd;
+  color: var(--fut-text);
+}
+
+.field textarea {
+  min-height: 115px;
+  resize: vertical;
+}
+
+.field input:hover,
+.field textarea:hover,
+.field select:hover {
+  border-color: #c9a5ab;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: 3px solid rgba(229, 189, 69, 0.25);
+  border-color: var(--fut-burgundy);
+  background: var(--fut-white);
+  box-shadow: 0 0 0 1px var(--fut-burgundy);
+}
+
+.field-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.field-meta small,
+.hint {
+  color: var(--fut-muted);
+  font-size: 0.82rem;
+}
+
+.error {
+  color: #b42318;
+  font-size: 0.84rem;
+}
+
+/* Mensajes y seguimiento */
+
+.notice {
+  padding: 15px 17px;
+  margin: 18px 0;
+  border: 1px solid #ead28a;
+  border-radius: 10px;
+  background: #fff8e6;
+  color: #674900;
+}
+
+.error-box {
+  border-color: #f0c9c5;
+  background: #fff1f0;
+  color: #8d2018;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid #f0dfad;
+  border-radius: 30px;
+  background: #fff5d9;
+  color: var(--fut-burgundy);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tracking-code {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 22px;
+  margin: 22px 0;
+  border: 1px dashed var(--fut-gold);
+  border-radius: 13px;
+  background: #fffaf0;
+}
+
+.tracking-code span {
+  width: 100%;
+  color: var(--fut-muted);
+  font-size: 0.84rem;
+}
+
+.tracking-code strong {
+  color: var(--fut-burgundy);
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  overflow-wrap: anywhere;
+}
+
+/* Tablas administrativas */
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--fut-border);
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--fut-white);
+  font-size: 0.91rem;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0e8e8;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: #fff6ec;
+  color: var(--fut-burgundy);
+  font-weight: 800;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #fffaf3;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  padding: 21px;
+  border: 1px solid var(--fut-border);
+  border-top: 3px solid var(--fut-gold);
+  border-radius: 13px;
+  background: var(--fut-white);
+  box-shadow: 0 5px 18px rgba(73, 0, 15, 0.04);
+}
+
+.stat-card span {
+  color: var(--fut-muted);
+  font-size: 0.85rem;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--fut-burgundy);
+  font-size: 1.9rem;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr 1fr 1fr;
+  gap: 12px;
+}
+
+/* Vista previa y acciones */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgba(38, 7, 15, 0.68);
+  backdrop-filter: blur(5px);
+}
+
+.review-modal {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: clamp(22px, 4vw, 36px);
+  overflow-y: auto;
+  border: 1px solid #f0dfad;
+  border-radius: 18px;
+  background: var(--fut-cream);
+  box-shadow: 0 25px 70px rgba(30, 0, 8, 0.25);
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.review-grid > div {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--fut-border);
+  border-radius: 10px;
+  background: var(--fut-white);
+}
+
+.review-grid > div.full {
+  grid-column: 1 / -1;
+}
+
+.review-grid small {
+  color: var(--fut-muted);
+  font-weight: 700;
+}
+
+.review-grid p {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.actions,
+.form-footer,
+.modal-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.form-footer {
+  justify-content: space-between;
+  padding-top: 22px;
+}
+
+.form-footer p {
+  color: var(--fut-muted);
+  font-size: 0.86rem;
+}
+
+/* Animaciones sutiles */
+
+@keyframes fut-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Adaptación a móviles */
+
+@media (max-width: 850px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    width: calc(100% - 28px);
+    padding: 28px 0 42px;
+  }
+
+  .form-grid,
+  .form-grid.three,
+  .review-grid,
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full,
+  .review-grid > div.full {
+    grid-column: auto;
+  }
+
+  .fut-form {
+    padding: 20px 16px;
+  }
+
+  .section-heading {
+    gap: 10px;
+  }
+
+  .section-icon {
+    flex-basis: 38px;
+    height: 38px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .form-footer .button,
+  .actions .button {
+    width: 100%;
+  }
+
+  .tracking-code .button {
+    margin-left: 0;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  th,
+  td {
+    padding: 11px 12px;
+  }
+}
+
+/* Accesibilidad */
+
+:focus-visible {
+  outline: 3px solid var(--fut-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  header,
+  footer,
+  .form-footer,
+  .actions,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .page {
+    width: 100%;
+    padding: 0;
+  }
+
+  .card {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+
+/* ==========================================
+   INICIO FUT — ELEGANCIA Y ANIMACIÓN SUAVE
+   Sin rayas diagonales ni adornos excesivos
+========================================== */
+
+:root {
+  --fut-guinda: #760018;
+  --fut-guinda-oscuro: #4d0010;
+  --fut-guinda-claro: #9c102b;
+  --fut-dorado: #e5bd45;
+  --fut-crema: #fffaf4;
+}
+
+/* Fondo principal del inicio */
+.home-hero,
+.hero,
+.hero-section,
+.home-hero-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 82% 20%,
+      rgba(170, 27, 54, 0.32),
+      transparent 48%
+    ),
+    linear-gradient(
+      120deg,
+      var(--fut-guinda-oscuro) 0%,
+      var(--fut-guinda) 53%,
+      #870019 100%
+    ) !important;
+  color: var(--fut-crema);
+}
+
+/* Elimina las líneas y diagonales decorativas anteriores */
+.home-hero::before,
+.home-hero::after,
+.hero::before,
+.hero::after,
+.hero-section::before,
+.hero-section::after,
+.home-hero-section::before,
+.home-hero-section::after {
+  background-image: none !important;
+  border-color: transparent;
+}
+
+/* Brillo ambiental discreto */
+.home-hero::before,
+.hero::before,
+.hero-section::before,
+.home-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 75% 45%,
+    rgba(229, 189, 69, 0.09),
+    transparent 38%
+  ) !important;
+  animation: brilloElegante 9s ease-in-out infinite alternate;
+}
+
+/* Tipografía clara y elegante */
+.home-hero h1,
+.hero h1,
+.hero-section h1,
+.home-hero-section h1 {
+  color: #fffaf4;
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+  font-weight: 850;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+  animation: entradaSuave 0.8s ease-out both;
+}
+
+/* Palabra destacada en dorado */
+.home-hero h1 span,
+.hero h1 span,
+.hero-section h1 span,
+.home-hero-section h1 span {
+  color: #ffd65c;
+}
+
+/* Frase principal */
+.home-hero p,
+.hero p,
+.hero-section p,
+.home-hero-section p {
+  color: rgba(255, 250, 244, 0.9);
+  line-height: 1.7;
+}
+
+/* Botón principal */
+.home-hero .button,
+.hero .button,
+.hero-section .button,
+.home-hero-section .button {
+  border-radius: 11px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.home-hero .button:hover,
+.hero .button:hover,
+.hero-section .button:hover,
+.home-hero-section .button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(25, 0, 5, 0.22);
+}
+
+/* Animaciones sutiles */
+@keyframes brilloElegante {
+  from {
+    transform: translate3d(-1%, 0, 0) scale(1);
+    opacity: 0.65;
+  }
+
+  to {
+    transform: translate3d(1%, -1%, 0) scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes entradaSuave {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Adaptación a móviles */
+@media (max-width: 600px) {
+  .home-hero h1,
+  .hero h1,
+  .hero-section h1,
+  .home-hero-section h1 {
+    font-size: clamp(2.4rem, 10vw, 3.5rem);
+  }
+}
+
+/* Respeta las preferencias de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .home-hero::before,
+  .hero::before,
+  .hero-section::before,
+  .home-hero-section::before,
+  .home-hero h1,
+  .hero h1,
+  .hero-section h1,
+  .home-hero-section h1 {
+    animation: none !important;
+  }
+}
+
+
+/* ===== Seguimiento profesional y estados ===== */
+.muted-label { color: var(--fut-muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.track-page .track-search, .track-page .track-result { margin-bottom: 22px; }
+.track-form .field { margin-bottom: 14px; }
+.track-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+.track-code { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.track-code strong { font-size: 1.6rem; letter-spacing: .04em; color: var(--fut-burgundy); }
+.link-btn { background: none; border: 0; color: var(--fut-burgundy); font-weight: 700; text-decoration: underline; cursor: pointer; padding: 4px; }
+.status-badge { display: inline-block; padding: 7px 16px; border-radius: 999px; font-weight: 800; font-size: .86rem; letter-spacing: .03em; text-transform: uppercase; border: 1px solid transparent; }
+.st-received { background: #fff4d6; color: #7a5600; border-color: #f0d58a; }
+.st-review   { background: #e3efff; color: #0f4c9a; border-color: #b7d3fb; }
+.st-observed { background: #ffe9d6; color: #9a4a00; border-color: #f7c79b; }
+.st-done     { background: #def6e5; color: #136b32; border-color: #a9e3bd; }
+.st-rejected { background: #fde2e2; color: #a4161a; border-color: #f4b3b3; }
+
+.stepper { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); position: relative; }
+.stepper li { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; text-align: center; }
+.stepper li:not(:last-child)::after { content: ''; position: absolute; top: 19px; left: calc(50% + 24px); width: calc(100% - 48px); height: 3px; background: var(--fut-border); }
+.stepper li.done:not(:last-child)::after { background: var(--fut-burgundy); }
+.step-dot { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: #fff; border: 3px solid var(--fut-border); color: var(--fut-muted); z-index: 1; }
+.stepper li.done .step-dot { background: var(--fut-burgundy); border-color: var(--fut-burgundy); color: #fff; }
+.stepper li.current .step-dot { border-color: var(--fut-burgundy); color: var(--fut-burgundy); box-shadow: 0 0 0 5px rgba(118,0,24,.12); }
+.stepper li.current.st-done .step-dot { background: #136b32; border-color: #136b32; color: #fff; box-shadow: 0 0 0 5px rgba(19,107,50,.15); }
+.stepper li.current.st-rejected .step-dot { background: #a4161a; border-color: #a4161a; color: #fff; box-shadow: 0 0 0 5px rgba(164,22,26,.15); }
+.step-label { font-size: .88rem; font-weight: 700; color: var(--fut-text); }
+.stepper li.pending .step-label { color: var(--fut-muted); font-weight: 600; }
+
+.track-message { border-left: 5px solid currentColor; border-radius: 10px; padding: 14px 18px; margin-bottom: 22px; }
+.track-message p { margin: 4px 0 0; }
+.track-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 0 0 22px; }
+.track-meta div { background: #fffefd; border: 1px solid var(--fut-border); border-radius: 12px; padding: 12px 16px; }
+.track-meta dt { color: var(--fut-muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.track-meta dd { margin: 4px 0 0; font-weight: 600; }
+.timeline ul { list-style: none; margin: 0 0 22px; padding: 0 0 0 18px; border-left: 3px solid var(--fut-border); }
+.timeline li { position: relative; padding: 0 0 14px 18px; }
+.timeline li::before { content: ''; position: absolute; left: -26px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--fut-burgundy); }
+.tl-date { display: block; color: var(--fut-muted); font-size: .8rem; }
+.tl-text { font-weight: 700; }
+
+/* Administración */
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row-actions .button { padding: 8px 14px; min-height: 0; font-size: .85rem; }
+.admin-detail .detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 24px; margin: 0 0 20px; }
+.detail-grid div { padding: 10px 0; border-bottom: 1px solid var(--fut-border); }
+.detail-grid dt { color: var(--fut-muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.detail-grid dd { margin: 3px 0 0; }
+.detail-grid .full { grid-column: 1 / -1; }
+.edit-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0 18px; }
+.edit-grid .button { align-self: start; }
+@media (max-width: 700px) { .detail-grid, .edit-grid { grid-template-columns: 1fr; } .stepper .step-label { font-size: .75rem; } }
+@media print { header, footer, .no-print, .track-search { display: none !important; } }
+
+.button.danger { background: #b42318; color: #fff; border-color: #b42318; }
+.button.danger:hover { background: #8f1b12; }
+
+/* Documento adjunto en el detalle */
+.attachment-box { border: 1px solid var(--fut-border); border-radius: 14px; padding: 16px; background: #fffefd; margin-bottom: 18px; }
+.attachment-img { max-width: 100%; max-height: 480px; border-radius: 10px; border: 1px solid var(--fut-border); display: block; margin: 10px 0 14px; }
+.attachment-pdf { width: 100%; height: 520px; border: 1px solid var(--fut-border); border-radius: 10px; margin: 10px 0 14px; background: #fff; }
+
+/* ── Barra de sesión (panel admin) ────────────────────────────────────────── */
+.session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--fut-cream);
+  border: 1px solid var(--fut-border);
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--fut-text);
+}
+
+.session-bar__user {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--fut-burgundy-dark);
+}
+
+.session-bar__role {
+  display: inline-block;
+  background: var(--fut-burgundy);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.session-bar__demo-badge {
+  display: inline-block;
+  background: #fef3cd;
+  color: #8a6100;
+  border: 1px solid #f0c24b;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════
+   BOTONES SUPERIORES DEL PANEL ADMIN
+   Orden: Nueva solicitud | Nuevo solicitante | Tipos de trámite | Cerrar sesión
+═══════════════════════════════════════ */
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 24px;
+  align-items: center;
+}
+
+.top-btn {
+  min-height: 44px;
+  padding: 11px 20px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+/* Botón principal: + Nueva solicitud (guinda sólido) */
+.top-btn--primary {
+  background: linear-gradient(135deg, var(--fut-burgundy), var(--fut-red));
+  color: var(--fut-white) !important;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(118, 0, 24, 0.18);
+}
+.top-btn--primary:hover {
+  background: var(--fut-burgundy-dark);
+  transform: translateY(-2px);
+}
+
+/* Botones secundarios: + Nuevo solicitante | + Tipos de trámite (blanco con borde) */
+.top-btn--secondary {
+  background: var(--fut-white);
+  color: var(--fut-burgundy) !important;
+  border: 1px solid #e8d6aa;
+  box-shadow: none;
+}
+.top-btn--secondary:hover {
+  background: var(--fut-gold-light);
+  border-color: var(--fut-gold);
+  color: var(--fut-burgundy-dark) !important;
+}
+
+/* Botón de salida: Cerrar sesión (outline guinda) */
+.top-btn--outline {
+  background: transparent;
+  color: var(--fut-burgundy) !important;
+  border: 1.5px solid var(--fut-burgundy);
+  box-shadow: none;
+}
+.top-btn--outline:hover {
+  background: var(--fut-burgundy);
+  color: var(--fut-white) !important;
+}
+
+/* Responsivo: en móvil se apilan */
+@media (max-width: 640px) {
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .top-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+/* ═══════════════════════════════════════════════════════════
+   MEJORAS VISUALES DEL PANEL ADMINISTRATIVO
+   Solo organización y espaciado — sin cambiar colores
+═══════════════════════════════════════════════════════════ */
+
+/* ── Encabezado del panel ── */
+.admin-page .eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  letter-spacing: 0.18em;
+}
+
+.admin-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--fut-border);
+}
+
+.admin-title-row h1 {
+  margin: 0 0 4px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.admin-title-row p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ── Tarjetas de estadísticas ── */
+.stats-grid {
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--fut-gold), transparent);
+  opacity: 0.5;
+}
+
+.stat-card span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+/* ── Tarjeta de tabla ── */
+.admin-table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.admin-table-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--fut-border);
+  background: #fffdf9;
+}
+
+.admin-table-heading h2 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+}
+
+.admin-table-heading p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.admin-table-heading .actions {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.admin-table-heading .field {
+  margin-bottom: 0;
+  min-width: 220px;
+}
+
+/* ── Filtros ── */
+.filters-grid {
+  padding: 16px 28px;
+  background: #fffefc;
+  border-bottom: 1px solid var(--fut-border);
+  margin: 0;
+  gap: 14px;
+}
+
+.filters-grid .field {
+  margin-bottom: 0;
+}
+
+.filters-grid label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fut-muted);
+  margin-bottom: 4px;
+}
+
+/* ── Tabla ── */
+.admin-table-card .table-wrap {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+.admin-table-card table {
+  font-size: 0.9rem;
+}
+
+.admin-table-card th {
+  padding: 14px 20px;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: #fff8f0;
+  border-bottom: 2px solid var(--fut-border);
+}
+
+.admin-table-card td {
+  padding: 14px 20px;
+  vertical-align: middle;
+}
+
+.admin-table-card tbody tr:hover {
+  background: #fffaf3;
+}
+
+.admin-table-card tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table-card td.empty {
+  text-align: center;
+  color: var(--fut-muted);
+  padding: 40px 20px;
+  font-style: italic;
+  font-size: 0.93rem;
+}
+
+.admin-table-card .subject-cell {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Accesos rápidos inferiores ── */
+.admin-table-card > .actions {
+  padding: 20px 28px;
+  border-top: 1px solid var(--fut-border);
+  background: #fffdf9;
+  margin-top: 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-table-card > .actions .button {
+  font-size: 0.88rem;
+  padding: 10px 18px;
+  min-height: 40px;
+}
+
+/* ── Notice dentro del panel ── */
+.admin-page .notice {
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 0.93rem;
+}
+
+/* ── Breadcrumb / enlace volver ── */
+.admin-page > a,
+.solicitante-page > a,
+.tipo-tramite-page > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--fut-muted);
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: color 0.2s;
+}
+
+.admin-page > a:hover,
+.solicitante-page > a:hover,
+.tipo-tramite-page > a:hover {
+  color: var(--fut-burgundy);
+}
+
+/* ── Formulario dentro del card ── */
+.form-card {
+  padding: clamp(24px, 4vw, 36px);
+}
+
+/* ── Detalle de solicitante / tipo-tramite ── */
+.form-card .form-grid .field label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fut-muted);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.form-card .form-grid .field p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--fut-text);
+  font-weight: 500;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--fut-border);
+}
+
+/* ── Row-actions: botones de acción en tabla ── */
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.row-actions .button {
+  padding: 7px 12px;
+  min-height: 34px;
+  font-size: 0.82rem;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* ── Responsivo del panel ── */
+@media (max-width: 900px) {
+  .admin-table-heading {
+    flex-direction: column;
+    padding: 18px 20px 16px;
+  }
+
+  .admin-table-heading .field {
+    min-width: 100%;
+  }
+
+  .filters-grid {
+    padding: 14px 20px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-table-card th,
+  .admin-table-card td {
+    padding: 12px 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-title-row {
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 16px;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+    padding: 12px 16px;
+  }
+
+  .admin-table-card .table-wrap {
+    font-size: 0.83rem;
+  }
+
+  .admin-table-card > .actions {
+    padding: 16px 16px;
+  }
+
+  .row-actions {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .row-actions .button {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CORRECCIÓN: SIN BARRA HORIZONTAL EN TABLAS DEL PANEL
+   Adapta el ancho de las columnas al contenedor disponible
+═══════════════════════════════════════════════════════════ */
+
+/* El contenedor page no genera desbordamiento */
+.solicitante-page,
+.tipo-tramite-page {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* La tabla de solicitantes y tipos usa todo el ancho disponible */
+.solicitante-page .table-wrap,
+.tipo-tramite-page .table-wrap,
+.admin-page .table-wrap {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Tabla con layout fijo para controlar columnas */
+.solicitante-page table,
+.tipo-tramite-page table {
+  width: 100%;
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+/* Anchos proporcionales para la tabla de solicitantes (9 columnas) */
+.solicitante-page table th:nth-child(1),
+.solicitante-page table td:nth-child(1) { width: 4%; }   /* ID */
+.solicitante-page table th:nth-child(2),
+.solicitante-page table td:nth-child(2) { width: 5%; }   /* Doc. */
+.solicitante-page table th:nth-child(3),
+.solicitante-page table td:nth-child(3) { width: 10%; }  /* N° documento */
+.solicitante-page table th:nth-child(4),
+.solicitante-page table td:nth-child(4) { width: 18%; }  /* Apellidos y nombres */
+.solicitante-page table th:nth-child(5),
+.solicitante-page table td:nth-child(5) { width: 18%; }  /* Ubicación */
+.solicitante-page table th:nth-child(6),
+.solicitante-page table td:nth-child(6) { width: 10%; }  /* Teléfono */
+.solicitante-page table th:nth-child(7),
+.solicitante-page table td:nth-child(7) { width: 14%; }  /* Correo */
+.solicitante-page table th:nth-child(8),
+.solicitante-page table td:nth-child(8) { width: 10%; }  /* Fecha */
+.solicitante-page table th:nth-child(9),
+.solicitante-page table td:nth-child(9) { width: 11%; }  /* Acciones */
+
+/* Anchos proporcionales para la tabla de tipos de trámite (12 columnas) */
+/* La tabla usa table-layout: auto para que las columnas se adapten al contenido */
+.tipo-tramite-page table {
+  table-layout: auto !important;
+  min-width: 1100px;
+}
+
+.tipo-tramite-page table th:nth-child(1),
+.tipo-tramite-page table td:nth-child(1)  { width: 40px;  min-width: 40px;  }  /* ID */
+.tipo-tramite-page table th:nth-child(2),
+.tipo-tramite-page table td:nth-child(2)  { min-width: 140px; }                 /* Nombre */
+.tipo-tramite-page table th:nth-child(3),
+.tipo-tramite-page table td:nth-child(3)  { width: 80px;  min-width: 80px;  }  /* Cat. */
+.tipo-tramite-page table th:nth-child(4),
+.tipo-tramite-page table td:nth-child(4)  { min-width: 120px; }                 /* Descripción */
+.tipo-tramite-page table th:nth-child(5),
+.tipo-tramite-page table td:nth-child(5)  { min-width: 100px; }                 /* Requisitos */
+.tipo-tramite-page table th:nth-child(6),
+.tipo-tramite-page table td:nth-child(6)  { width: 55px;  min-width: 55px;  }  /* Días */
+.tipo-tramite-page table th:nth-child(7),
+.tipo-tramite-page table td:nth-child(7)  { width: 55px;  min-width: 55px;  }  /* Docs. */
+.tipo-tramite-page table th:nth-child(8),
+.tipo-tramite-page table td:nth-child(8)  { width: 75px;  min-width: 75px;  }  /* Vigente */
+.tipo-tramite-page table th:nth-child(9),
+.tipo-tramite-page table td:nth-child(9)  { width: 70px;  min-width: 70px;  }  /* Estado */
+.tipo-tramite-page table th:nth-child(10),
+.tipo-tramite-page table td:nth-child(10) { width: 75px;  min-width: 75px;  }  /* F. Registro */
+.tipo-tramite-page table th:nth-child(11),
+.tipo-tramite-page table td:nth-child(11) { width: 75px;  min-width: 75px;  }  /* F. Actualiz. */
+.tipo-tramite-page table th:nth-child(12),
+.tipo-tramite-page table td:nth-child(12) { width: 70px;  min-width: 70px;  }  /* Acc. */
+
+.tipo-tramite-page .table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Texto en celdas que puede ser largo */
+.solicitante-page td,
+.tipo-tramite-page td {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  font-size: 0.87rem;
+  padding: 11px 12px;
+}
+
+/* Botones en acciones: más compactos pero legibles */
+.solicitante-page .row-actions .button,
+.tipo-tramite-page .row-actions .button {
+  padding: 5px 9px;
+  min-height: 30px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+/* En pantallas medianas: reducir padding y fuente */
+@media (max-width: 1100px) {
+  .solicitante-page td,
+  .tipo-tramite-page td,
+  .solicitante-page th,
+  .tipo-tramite-page th {
+    padding: 9px 8px;
+    font-size: 0.83rem;
+  }
+}
+
+/* En pantallas pequeñas: scroll horizontal controlado */
+@media (max-width: 768px) {
+  .solicitante-page table,
+  .tipo-tramite-page table {
+    table-layout: auto;
+    min-width: 700px;
+  }
+
+  .solicitante-page .table-wrap,
+  .tipo-tramite-page .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTONES DE ICONO — reemplazan texto en tablas del panel
+   Uso: class="btn-icon btn-icon--view|edit|delete|restore"
+═══════════════════════════════════════════════════════════ */
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+/* 👁 Ver */
+.btn-icon--view {
+  background: #e8f4fd;
+  border-color: #b8d9f5;
+  color: #0f5c8a;
+}
+.btn-icon--view:hover {
+  background: #cce8fa;
+}
+
+/* ✏️ Editar */
+.btn-icon--edit {
+  background: #fff8e1;
+  border-color: #f0d58a;
+  color: #7a5600;
+}
+.btn-icon--edit:hover {
+  background: #fff0b3;
+}
+
+/* 🗑 Eliminar */
+.btn-icon--delete {
+  background: #fde8e8;
+  border-color: #f4b3b3;
+  color: #a4161a;
+}
+.btn-icon--delete:hover {
+  background: #fcd0d0;
+}
+
+/* ♻️ Restaurar */
+.btn-icon--restore {
+  background: #e8f8ee;
+  border-color: #a9e3bd;
+  color: #136b32;
+}
+.btn-icon--restore:hover {
+  background: #ccf0d8;
+}
+
+/* 🔒 Desactivar */
+.btn-icon--delete.lock {
+  background: #fde8e8;
+  border-color: #f4b3b3;
+}
+
+/* 🔓 Activar */
+.btn-icon--restore.unlock {
+  background: #e8f8ee;
+  border-color: #a9e3bd;
+}
+
+/* 🔒 Candado — desactivar/bloquear (naranja suave) */
+.btn-icon--lock {
+  background: #fff3e0;
+  border-color: #ffcc80;
+  color: #b45309;
+}
+.btn-icon--lock:hover {
+  background: #ffe0b2;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+/* Columna Acc. — contenedor compacto */
+.row-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+/* Ancho mínimo de la columna de acciones */
+.admin-table-card th:last-child,
+.admin-table-card td:last-child {
+  width: 80px;
+  min-width: 80px;
+}
+/* ═══════════════════════════════════════════════════════════
+   TIPO-TRAMITE: celdas compactas sin texto vertical
+═══════════════════════════════════════════════════════════ */
+
+/* Columnas numéricas y de estado: no romper texto */
+.tipo-tramite-page table td:nth-child(1),   /* ID */
+.tipo-tramite-page table td:nth-child(6),   /* Días */
+.tipo-tramite-page table td:nth-child(7),   /* Docs. */
+.tipo-tramite-page table td:nth-child(9),   /* Estado */
+.tipo-tramite-page table td:nth-child(10),  /* F. Registro */
+.tipo-tramite-page table td:nth-child(11),  /* F. Actualiz. */
+.tipo-tramite-page table td:nth-child(12) { /* Acc. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Encabezados: no rotar texto */
+.tipo-tramite-page table th {
+  white-space: nowrap;
+  writing-mode: horizontal-tb !important;
+  text-orientation: initial !important;
+  vertical-align: bottom;
+  padding: 10px 8px;
+  font-size: 0.75rem;
+}
+
+/* Celdas de texto largo: sí pueden romper */
+.tipo-tramite-page table td:nth-child(2),   /* Nombre */
+.tipo-tramite-page table td:nth-child(4),   /* Descripción */
+.tipo-tramite-page table td:nth-child(5) {  /* Requisitos */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Celda categoría: una sola línea */
+.tipo-tramite-page table td:nth-child(3) {  /* Cat. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estado badge en tabla: tamaño compacto */
+.tipo-tramite-page .status-badge {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0;
+}
+
+/* Padding compacto para todas las celdas */
+.tipo-tramite-page table td,
+.tipo-tramite-page table th {
+  padding: 10px 8px;
+  font-size: 0.84rem;
+}
+
+/* Botones de icono dentro de la tabla tipo-tramite: alineados en fila */
+.tipo-tramite-page .row-actions {
+  display: flex;
+  gap: 3px;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+}
+/* ═══════════════════════════════════════════════════════════
+   CORRECCIÓN FINAL: Botones de tipo-tramite en fila horizontal
+   La celda de acciones tiene 2 botones de 32px + gap = ~72px mínimo
+═══════════════════════════════════════════════════════════ */
+
+/* La celda td.row-actions en tipo-tramite NO es la última columna —
+   la última columna de datos es F.Actualiz. y row-actions es la celda final.
+   Forzamos display flex horizontal y ancho suficiente. */
+.tipo-tramite-page td.row-actions {
+  display: table-cell !important;
+  padding: 6px 4px !important;
+  white-space: nowrap !important;
+  width: 76px !important;
+  min-width: 76px !important;
+  vertical-align: middle !important;
+}
+
+.tipo-tramite-page td.row-actions > * {
+  display: inline-flex !important;
+  vertical-align: middle;
+}
+
+/* Overrides para la columna 12 (Acc.) en tipo-tramite */
+.tipo-tramite-page table th:nth-child(12),
+.tipo-tramite-page table td:nth-child(12) {
+  width: 76px !important;
+  min-width: 76px !important;
+  white-space: nowrap !important;
+}
+
+/* Asegura que los btn-icon dentro de row-actions no se rompan a nueva línea */
+.tipo-tramite-page .row-actions {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 3px !important;
+  align-items: center !important;
+  width: 100%;
+}
+
+.tipo-tramite-page .btn-icon {
+  flex-shrink: 0;
+  display: inline-flex !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+/* ═══════════════════════════════════════════════════════════
+   SOLICITANTE: tabla con 12 campos funcionales (13 columnas con Acc.)
+   Sin columna ID — los campos de negocio son los 12 funcionales
+═══════════════════════════════════════════════════════════ */
+
+/* La tabla de solicitantes ahora tiene 13 columnas — usa auto layout */
+.solicitante-page table {
+  table-layout: auto !important;
+  min-width: 1200px;
+}
+
+.solicitante-page .table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Anchos en píxeles para las 13 columnas */
+.solicitante-page table th:nth-child(1),
+.solicitante-page table td:nth-child(1)  { width: 60px;  min-width: 60px;  }  /* Tipo Doc. */
+.solicitante-page table th:nth-child(2),
+.solicitante-page table td:nth-child(2)  { width: 90px;  min-width: 90px;  }  /* N° Documento */
+.solicitante-page table th:nth-child(3),
+.solicitante-page table td:nth-child(3)  { min-width: 100px; }                  /* Ap. Paterno */
+.solicitante-page table th:nth-child(4),
+.solicitante-page table td:nth-child(4)  { min-width: 100px; }                  /* Ap. Materno */
+.solicitante-page table th:nth-child(5),
+.solicitante-page table td:nth-child(5)  { min-width: 90px;  }                  /* Nombres */
+.solicitante-page table th:nth-child(6),
+.solicitante-page table td:nth-child(6)  { min-width: 110px; }                  /* Ubicación */
+.solicitante-page table th:nth-child(7),
+.solicitante-page table td:nth-child(7)  { min-width: 90px;  }                  /* Dirección */
+.solicitante-page table th:nth-child(8),
+.solicitante-page table td:nth-child(8)  { width: 80px;  min-width: 80px;  }  /* Teléfono */
+.solicitante-page table th:nth-child(9),
+.solicitante-page table td:nth-child(9)  { min-width: 120px; }                  /* Correo */
+.solicitante-page table th:nth-child(10),
+.solicitante-page table td:nth-child(10) { width: 65px;  min-width: 65px;  }  /* Estado */
+.solicitante-page table th:nth-child(11),
+.solicitante-page table td:nth-child(11) { width: 72px;  min-width: 72px;  }  /* F. Registro */
+.solicitante-page table th:nth-child(12),
+.solicitante-page table td:nth-child(12) { width: 72px;  min-width: 72px;  }  /* F. Actualiz. */
+.solicitante-page table th:nth-child(13),
+.solicitante-page table td:nth-child(13) { width: 80px;  min-width: 80px;  }  /* Acc. */
+
+/* Encabezados: no rotar texto */
+.solicitante-page table th {
+  white-space: nowrap;
+  writing-mode: horizontal-tb !important;
+  text-orientation: initial !important;
+  padding: 10px 8px;
+  font-size: 0.75rem;
+}
+
+/* Celdas compactas */
+.solicitante-page table td {
+  padding: 9px 8px;
+  font-size: 0.84rem;
+  vertical-align: middle;
+}
+
+/* Columnas numéricas y de estado: no romper */
+.solicitante-page table td:nth-child(1),
+.solicitante-page table td:nth-child(2),
+.solicitante-page table td:nth-child(8),
+.solicitante-page table td:nth-child(10),
+.solicitante-page table td:nth-child(11),
+.solicitante-page table td:nth-child(12),
+.solicitante-page table td:nth-child(13) {
+  white-space: nowrap;
+}
+
+/* Estado badge compacto */
+.solicitante-page .status-badge {
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0;
+}
+
+/* Botones de acción en fila */
+.solicitante-page .row-actions {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 2px !important;
+  align-items: center !important;
+}
+
+.solicitante-page .btn-icon {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 0.9rem !important;
+  flex-shrink: 0;
+}
