@@ -1,0 +1,146 @@
+<div class="solicitante-form-host">
+
+  <p *ngIf="!tiposDocumento.length" class="hint">
+    Cargando catálogos…
+  </p>
+
+  <div *ngIf="error || saveError" class="notice error-box" role="alert">{{ error || saveError }}</div>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+
+    <!-- Sección 1: Documento de identidad -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="sol-tipoDocumento">Tipo de documento <span>(Obligatorio)</span></label>
+        <select id="sol-tipoDocumento" formControlName="idTipoDocumento">
+          <option [ngValue]="0">[Seleccionar tipo]</option>
+          <option *ngFor="let t of tiposDocumentoDisponibles" [ngValue]="t.id">{{ t.codigo }} — {{ t.nombre }}</option>
+        </select>
+        <span class="error" *ngIf="invalido('idTipoDocumento')">Selecciona el tipo de documento.</span>
+      </div>
+
+      <div class="field">
+        <label for="sol-numeroDocumento">Número de documento <span>(Obligatorio)</span></label>
+        <input
+          id="sol-numeroDocumento"
+          formControlName="numeroDocumento"
+          [maxlength]="codigoTipo(form.controls.idTipoDocumento.value) === 'CNE' ? 12 : 8"
+          [attr.inputmode]="codigoTipo(form.controls.idTipoDocumento.value) === 'CNE' ? 'text' : 'numeric'"
+          (input)="limitarDocumento($event)"
+          (keydown)="bloquearTecla($event)"
+          (paste)="controlarPegado($event)"
+          autocomplete="off"
+        />
+        <span class="error" *ngIf="invalido('numeroDocumento')">{{
+          codigoTipo(form.controls.idTipoDocumento.value) === 'CNE'
+            ? 'El CNE debe tener entre 9 y 12 caracteres alfanuméricos.'
+            : 'El DNI debe contener exactamente 8 dígitos numéricos.'
+        }}</span>
+      </div>
+
+    </div>
+
+    <!-- Sección 2: Apellidos y nombres -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="sol-apellidoPaterno">Apellido paterno <span>(Obligatorio)</span></label>
+        <input id="sol-apellidoPaterno" formControlName="apellidoPaterno" maxlength="100" autocomplete="family-name" />
+        <span class="error" *ngIf="invalido('apellidoPaterno')">
+          Solo letras y espacios entre palabras. No se permiten números, guiones ni símbolos.
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="sol-apellidoMaterno">Apellido materno <span>(Obligatorio)</span></label>
+        <input id="sol-apellidoMaterno" formControlName="apellidoMaterno" maxlength="100" />
+        <span class="error" *ngIf="invalido('apellidoMaterno')">
+          Solo letras y espacios entre palabras. No se permiten números, guiones ni símbolos.
+        </span>
+      </div>
+
+      <div class="field full">
+        <label for="sol-nombres">Nombres <span>(Obligatorio)</span></label>
+        <input id="sol-nombres" formControlName="nombres" maxlength="100" autocomplete="given-name" />
+        <span class="error" *ngIf="invalido('nombres')">
+          Solo letras y espacios entre palabras. No se permiten números, guiones ni símbolos.
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Sección 3: Ubicación -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="sol-departamento">Departamento <span>(Obligatorio)</span></label>
+        <input id="sol-departamento" formControlName="departamento" maxlength="100" autocomplete="address-level1" placeholder="Ej: Cajamarca" />
+        <span class="error" *ngIf="invalido('departamento')">Ingresa el departamento.</span>
+      </div>
+
+      <div class="field">
+        <label for="sol-provincia">Provincia <span>(Obligatorio)</span></label>
+        <input id="sol-provincia" formControlName="provincia" maxlength="100" autocomplete="address-level2" placeholder="Ej: Chota" />
+        <span class="error" *ngIf="invalido('provincia')">Ingresa la provincia.</span>
+      </div>
+
+      <div class="field">
+        <label for="sol-distrito">Distrito <span>(Obligatorio)</span></label>
+        <input id="sol-distrito" formControlName="distrito" maxlength="100" placeholder="Ej: Querocoto" />
+        <span class="error" *ngIf="invalido('distrito')">Ingresa el distrito.</span>
+      </div>
+
+      <div class="field">
+        <label for="sol-direccion">Dirección <span class="tag">(Opcional)</span></label>
+        <input id="sol-direccion" formControlName="direccion" maxlength="250" autocomplete="street-address" />
+        <span class="error" *ngIf="invalido('direccion')">La dirección admite hasta 250 caracteres.</span>
+      </div>
+
+    </div>
+
+    <!-- Sección 4: Contacto -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="sol-telefono">Teléfono <span>(Obligatorio)</span></label>
+        <input id="sol-telefono" formControlName="telefono"
+               maxlength="9" inputmode="numeric" autocomplete="tel-national"
+               (keydown)="bloquearTelefono($event)"
+               (input)="limitarTelefono($event)"
+               (paste)="controlarPegadoTelefono($event)" />
+        <span class="error" *ngIf="invalido('telefono')">
+          Ingresa un número de celular de 9 dígitos.
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="sol-correo">Correo electrónico <span class="tag">(Opcional)</span></label>
+        <input id="sol-correo" type="email" formControlName="correo" maxlength="150" autocomplete="email" />
+        <span class="error" *ngIf="invalido('correo')">Ingresa un correo electrónico válido.</span>
+      </div>
+
+    </div>
+
+    <!-- Sección 5: Auditoría (informativa, gestionada por el sistema) -->
+    <div class="notice" style="margin-top: 8px; font-size: 0.88rem;">
+      <strong>Campos de auditoría</strong> — gestionados automáticamente por el sistema:
+      <strong>fecha_registro</strong> (al crear) ·
+      <strong>fecha_actualizacion</strong> (al editar) ·
+      <strong>fecha_eliminacion</strong> (al eliminar) ·
+      <strong>fecha_restauracion</strong> (al restaurar).
+      El campo <strong>estado</strong> (A = Activo / I = Inactivo) también es gestionado por el sistema.
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions">
+      <button class="button" type="submit" [disabled]="saving">
+        {{ saving ? 'Guardando…' : submitLabel }}
+      </button>
+      <button class="button secondary" type="button" (click)="cancelar()" [disabled]="saving">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>
