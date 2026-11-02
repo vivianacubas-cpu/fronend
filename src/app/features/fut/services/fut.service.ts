@@ -1,122 +1,351 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+
 import { environment } from '../../../../environments/environment';
 import { FutPayload, FutRecord } from '../interfaces/fut.model';
 
 export type { FutPayload, FutRecord } from '../interfaces/fut.model';
 
-@Injectable({ providedIn: 'root' })
+type ApiResponse = Record<string, unknown>;
+
+@Injectable({
+  providedIn: 'root',
+})
 export class FutService {
   private readonly api = `${environment.apiUrl}/solicitud`;
 
   constructor(private readonly http: HttpClient) {}
 
-  /** POST /v1/api/solicitud — registrar nuevo trámite */
+  /**
+   * Registra una nueva solicitud FUT.
+   * POST /v1/api/solicitud
+   */
   create(payload: FutPayload): Observable<FutRecord> {
-    return this.http.post<unknown>(this.api, payload).pipe(map((r) => this.normalize(r)));
-  }
-
-  /** GET /v1/api/solicitud/seguimiento/{codigo} — consulta pública */
-  track(code: string): Observable<FutRecord> {
     return this.http
-      .get<unknown>(`${this.api}/seguimiento/${encodeURIComponent(code.trim().toUpperCase())}`)
-      .pipe(map((r) => this.normalize(r)));
+      .post<unknown>(this.api, payload)
+      .pipe(map((response) => this.normalize(response)));
   }
 
-  /** GET /v1/api/solicitud?estado=X — lista activas (admin) */
+  /**
+   * Consulta una solicitud mediante su código de seguimiento.
+   * GET /v1/api/solicitud/seguimiento/{codigo}
+   */
+  track(code: string): Observable<FutRecord> {
+    const trackingCode = encodeURIComponent(
+      code.trim().toUpperCase()
+    );
+
+    return this.http
+      .get<unknown>(`${this.api}/seguimiento/${trackingCode}`)
+      .pipe(map((response) => this.normalize(response)));
+  }
+
+  /**
+   * Obtiene las solicitudes activas, opcionalmente filtradas por estado.
+   * GET /v1/api/solicitud?estado=X
+   */
   list(status = ''): Observable<FutRecord[]> {
     let params = new HttpParams();
-    if (status.trim()) params = params.set('estado', status.trim());
+    const normalizedStatus = status.trim();
+
+    if (normalizedStatus) {
+      params = params.set('estado', normalizedStatus);
+    }
+
     return this.http
       .get<unknown[]>(this.api, { params })
-      .pipe(map((rows) => rows.map((r) => this.normalize(r))));
+      .pipe(
+        map((rows) =>
+          Array.isArray(rows)
+            ? rows.map((row) => this.normalize(row))
+            : []
+        )
+      );
   }
 
-  /** GET /v1/api/solicitud/{id} — detalle completo */
+  /**
+   * Consulta el detalle completo de una solicitud.
+   * GET /v1/api/solicitud/{id}
+   */
   detail(id: number): Observable<FutRecord> {
-    return this.http.get<unknown>(`${this.api}/${id}`).pipe(map((r) => this.normalize(r)));
+    return this.http
+      .get<unknown>(`${this.api}/${id}`)
+      .pipe(map((response) => this.normalize(response)));
   }
 
-  /** PUT /v1/api/solicitud/{id} — editar datos */
-  updateRequest(id: number, payload: FutPayload): Observable<FutRecord> {
+  /**
+   * Actualiza los datos de una solicitud existente.
+   * PUT /v1/api/solicitud/{id}
+   */
+  updateRequest(
+    id: number,
+    payload: FutPayload
+  ): Observable<FutRecord> {
     return this.http
       .put<unknown>(`${this.api}/${id}`, payload)
-      .pipe(map((r) => this.normalize(r)));
+      .pipe(map((response) => this.normalize(response)));
   }
 
-  /** PATCH /v1/api/solicitud/{id}/estado — cambiar estado (admin) */
-  update(id: number, status: string, observation: string): Observable<FutRecord> {
+  /**
+   * Actualiza el estado y la observación de una solicitud.
+   * PATCH /v1/api/solicitud/{id}/estado
+   */
+  update(
+    id: number,
+    status: string,
+    observation: string
+  ): Observable<FutRecord> {
     return this.http
-      .patch<unknown>(`${this.api}/${id}/estado`, { estado: status, observacion: observation })
-      .pipe(map((r) => this.normalize(r)));
+      .patch<unknown>(`${this.api}/${id}/estado`, {
+        estado: status,
+        observacion: observation,
+      })
+      .pipe(map((response) => this.normalize(response)));
   }
 
-  /** DELETE /v1/api/solicitud/{id} — eliminación lógica */
+  /**
+   * Elimina lógicamente una solicitud.
+   * DELETE /v1/api/solicitud/{id}
+   */
   deleteRequest(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/${id}`);
   }
 
-  /** PATCH /v1/api/solicitud/{id}/restaurar — restaurar */
+  /**
+   * Restaura una solicitud eliminada.
+   * PATCH /v1/api/solicitud/{id}/restaurar
+   */
   restoreRequest(id: number): Observable<FutRecord> {
     return this.http
       .patch<unknown>(`${this.api}/${id}/restaurar`, {})
-      .pipe(map((r) => this.normalize(r)));
+      .pipe(map((response) => this.normalize(response)));
   }
 
-  /** GET /v1/api/solicitud/eliminadas — papelera */
+  /**
+   * Obtiene las solicitudes eliminadas.
+   * GET /v1/api/solicitud/eliminadas
+   */
   deleted(): Observable<FutRecord[]> {
     return this.http
       .get<unknown[]>(`${this.api}/eliminadas`)
-      .pipe(map((rows) => rows.map((r) => this.normalize(r))));
+      .pipe(
+        map((rows) =>
+          Array.isArray(rows)
+            ? rows.map((row) => this.normalize(row))
+            : []
+        )
+      );
   }
 
-  // ── Normaliza la respuesta del backend a FutRecord ──────────────────────────
-  private normalize(r: unknown): FutRecord {
-    const o = r as Record<string, unknown>;
-    const history = Array.isArray(o?.['history'])
-      ? (o['history'] as Record<string, unknown>[]).map((h) => ({
-          oldStatus:   String(h['oldStatus']   ?? h['estadoAnterior'] ?? ''),
-          newStatus:   String(h['newStatus']   ?? h['estadoNuevo']    ?? ''),
-          observation: String(h['observation'] ?? h['observacion']    ?? ''),
-          changedAt:   String(h['changedAt']   ?? h['fechaCambio']    ?? ''),
-        }))
-      : [];
+  /**
+   * Convierte la respuesta del backend al formato utilizado
+   * por el frontend.
+   */
+  private normalize(response: unknown): FutRecord {
+    const data: ApiResponse =
+      response !== null &&
+      typeof response === 'object' &&
+      !Array.isArray(response)
+        ? (response as ApiResponse)
+        : {};
+
+    const getValue = (
+      primary: string,
+      fallback?: string
+    ): unknown => {
+      return data[primary] ?? (
+        fallback ? data[fallback] : undefined
+      );
+    };
+
+    const getString = (
+      primary: string,
+      fallback?: string,
+      defaultValue = ''
+    ): string => {
+      const value = getValue(primary, fallback);
+
+      return value != null
+        ? String(value)
+        : defaultValue;
+    };
+
+    // Normalizar historial de seguimiento.
+    const historyData = Array.isArray(data['history'])
+      ? data['history']
+      : Array.isArray(data['historial'])
+        ? data['historial']
+        : [];
+
+    const history = historyData
+      .filter(
+        (item): item is ApiResponse =>
+          item !== null &&
+          typeof item === 'object' &&
+          !Array.isArray(item)
+      )
+      .map((item) => ({
+        oldStatus: String(
+          item['oldStatus'] ??
+          item['estadoAnterior'] ??
+          ''
+        ),
+        newStatus: String(
+          item['newStatus'] ??
+          item['estadoNuevo'] ??
+          ''
+        ),
+        observation: String(
+          item['observation'] ??
+          item['observacion'] ??
+          ''
+        ),
+        changedAt: String(
+          item['changedAt'] ??
+          item['fechaCambio'] ??
+          ''
+        ),
+      }));
 
     return {
-      ...o,
-      // IDs y códigos
-      id:           Number(o?.['id'] ?? o?.['idSolicitud'] ?? 0),
-      trackingCode: String(o?.['trackingCode'] ?? o?.['codigoSeguimiento'] ?? ''),
-      // Estado
-      status:      String(o?.['status']      ?? o?.['estado']            ?? 'RECIBIDO'),
-      observation: String(o?.['observation'] ?? o?.['observacion']       ?? ''),
-      // Fechas
-      createdAt:  String(o?.['createdAt']  ?? o?.['fechaRegistro']       ?? ''),
-      updatedAt:  String(o?.['updatedAt']  ?? o?.['fechaActualizacion']  ?? o?.['fechaRegistro'] ?? ''),
-      deletedAt:  o?.['deletedAt'] != null ? String(o['deletedAt'])
-                : o?.['fechaEliminacion'] != null ? String(o['fechaEliminacion'])
-                : undefined,
-      // Solicitante
-      solicitante: String(o?.['solicitante'] ?? o?.['solicito']       ?? ''),
-      fullName:    String(o?.['fullName']    ?? o?.['nombreCompleto'] ?? ''),
-      email:       String(o?.['email']       ?? o?.['correo']         ?? ''),
-      cellphone:   String(o?.['cellphone']   ?? o?.['celular']        ?? ''),
-      celular:     String(o?.['celular']     ?? o?.['cellphone']      ?? ''),
-      address:     String(o?.['address']     ?? o?.['domicilio']      ?? ''),
-      district:    String(o?.['district']    ?? o?.['distrito']       ?? ''),
-      province:    String(o?.['province']    ?? o?.['provincia']      ?? ''),
-      department:  String(o?.['department']  ?? o?.['departamento']   ?? ''),
-      // Trámite
-      basis:             String(o?.['basis']             ?? o?.['fundamento']          ?? ''),
-      attachedDocuments: String(o?.['attachedDocuments'] ?? o?.['documentosAdjuntos']  ?? ''),
-      declaredDate:      String(o?.['declaredDate']      ?? o?.['fechaDeclarada']      ?? ''),
-      signatureNote:     String(o?.['signatureNote']     ?? o?.['notaFirma']           ?? ''),
-      tipoTramite:       o?.['tipoTramite'] != null ? String(o['tipoTramite']) : undefined,
-      tipoSolicitante:   o?.['tipoSolicitante'] != null ? String(o['tipoSolicitante']) : undefined,
-      tipoDocumento:     o?.['tipoDocumento'] != null ? String(o['tipoDocumento']) : undefined,
-      folios:            o?.['folios'] != null ? Number(o['folios']) : undefined,
-      archivoNombre:     o?.['archivoNombre'] != null ? String(o['archivoNombre']) : undefined,
+      ...data,
+
+      // Identificadores y código de seguimiento.
+      id: Number(
+        getValue('id', 'idSolicitud') ?? 0
+      ),
+
+      trackingCode: getString(
+        'trackingCode',
+        'codigoSeguimiento'
+      ),
+
+      // Estado y observaciones.
+      status: getString(
+        'status',
+        'estado',
+        'RECIBIDO'
+      ),
+
+      observation: getString(
+        'observation',
+        'observacion'
+      ),
+
+      // Fechas del trámite.
+      createdAt: getString(
+        'createdAt',
+        'fechaRegistro'
+      ),
+
+      updatedAt: getString(
+        'updatedAt',
+        'fechaActualizacion',
+        getString('fechaRegistro')
+      ),
+
+      deletedAt:
+        getValue('deletedAt', 'fechaEliminacion') != null
+          ? String(
+              getValue('deletedAt', 'fechaEliminacion')
+            )
+          : undefined,
+
+      // Información del solicitante.
+      solicitante: getString(
+        'solicitante',
+        'solicito'
+      ),
+
+      fullName: getString(
+        'fullName',
+        'nombreCompleto'
+      ),
+
+      email: getString(
+        'email',
+        'correo'
+      ),
+
+      cellphone: getString(
+        'cellphone',
+        'celular'
+      ),
+
+      celular: getString(
+        'celular',
+        'cellphone'
+      ),
+
+      address: getString(
+        'address',
+        'domicilio'
+      ),
+
+      district: getString(
+        'district',
+        'distrito'
+      ),
+
+      province: getString(
+        'province',
+        'provincia'
+      ),
+
+      department: getString(
+        'department',
+        'departamento'
+      ),
+
+      // Información del trámite.
+      basis: getString(
+        'basis',
+        'fundamento'
+      ),
+
+      attachedDocuments: getString(
+        'attachedDocuments',
+        'documentosAdjuntos'
+      ),
+
+      declaredDate: getString(
+        'declaredDate',
+        'fechaDeclarada'
+      ),
+
+      signatureNote: getString(
+        'signatureNote',
+        'notaFirma'
+      ),
+
+      tipoTramite:
+        getValue('tipoTramite') != null
+          ? String(getValue('tipoTramite'))
+          : undefined,
+
+      tipoSolicitante:
+        getValue('tipoSolicitante') != null
+          ? String(getValue('tipoSolicitante'))
+          : undefined,
+
+      tipoDocumento:
+        getValue('tipoDocumento') != null
+          ? String(getValue('tipoDocumento'))
+          : undefined,
+
+      folios:
+        getValue('folios') != null
+          ? Number(getValue('folios'))
+          : undefined,
+
+      archivoNombre:
+        getValue('archivoNombre') != null
+          ? String(getValue('archivoNombre'))
+          : undefined,
+
+      // Historial de seguimiento.
       history,
     } as FutRecord;
   }
