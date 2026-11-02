@@ -385,8 +385,8 @@
                 <td><strong>{{ r.numeroDocumento ?? '—' }}</strong></td>
                 <td>{{ r.apellidoPaterno ?? '—' }}</td>
                 <td>{{ r.apellidoMaterno ?? '—' }}</td>
-                <td>{{ r.nombresResponsable ?? '—' }}</td>
-                <td>{{ nombreResponsable(r) }}</td>
+                <td>{{ r.nombres ?? '—' }}</td>
+                <td>{{ r.responsable || nombreResponsable(r) }}</td>
                 <td>{{ r.areaResponsable ?? nombreArea(r.idAreaResponsable) }}</td>
                 <td class="gt-td-date">{{ r.fechaRecepcion ? (r.fechaRecepcion | date:'dd/MM/yy') : '—' }}</td>
                 <td>{{ labelTipo(r.tipoGestion) }}</td>
@@ -521,8 +521,8 @@
                 <td><strong>{{ r.numeroDocumento ?? '—' }}</strong></td>
                 <td>{{ r.apellidoPaterno ?? '—' }}</td>
                 <td>{{ r.apellidoMaterno ?? '—' }}</td>
-                <td>{{ r.nombresResponsable ?? '—' }}</td>
-                <td>{{ nombreResponsable(r) }}</td>
+                <td>{{ r.nombres ?? '—' }}</td>
+                <td>{{ r.responsable || nombreResponsable(r) }}</td>
                 <td>{{ r.areaResponsable ?? nombreArea(r.idAreaResponsable) }}</td>
                 <td class="gt-td-date">{{ r.fechaRecepcion     ? (r.fechaRecepcion     | date:'dd/MM/yy') : '—' }}</td>
                 <td>{{ labelTipo(r.tipoGestion) }}</td>

@@ -1,25 +1,37 @@
 /**
  * Respuesta del backend para una gestión de trámite FUT.
- * Orden exacto según @JsonPropertyOrder de GestionTramiteFut.java.
+ * Campos que devuelve GestionTramiteResponse (record Java):
+ *   idGestion, numero, numeroDocumento, apellidoPaterno, apellidoMaterno,
+ *   nombres, responsable, areaResponsable, fechaRecepcion, tipoGestion,
+ *   prioridad, fechaLimite, estado (texto legible del estadoGestion),
+ *   decision, fechaResolucion, fechaRegistro, fechaActualizacion,
+ *   fechaEliminacion, fechaRestauracion.
  */
 export interface GestionTramite {
     idGestion?: number;
-    idSolicitante: number;
 
-    // Datos del solicitante (del backend vía @Transient — ocultos en el JSON de respuesta,
-    // pero el frontend los obtiene del servicio de solicitantes por idSolicitante)
+    // Campo correlativo de fila (del backend)
+    numero?: number;
+
+    // Datos del solicitante (vienen del GestionTramiteResponse)
+    idSolicitante: number;
     numeroDocumento?: string | null;
+    apellidoPaterno?: string | null;   // apellido paterno del SOLICITANTE
+    apellidoMaterno?: string | null;   // apellido materno del SOLICITANTE
+    nombres?: string | null;           // nombres del SOLICITANTE
 
     // Responsable de la gestión
-    nombresResponsable?: string | null;
-    apellidoPaterno?: string | null;    // apellidoPaternoResponsable serializado como "apellidoPaterno"
-    apellidoMaterno?: string | null;    // apellidoMaternoResponsable serializado como "apellidoMaterno"
-    areaResponsable?: string | null;    // nombreAreaResponsable serializado como "areaResponsable"
+    responsable?: string | null;       // nombre completo del responsable (nombres + apellidos)
+    areaResponsable?: string | null;   // nombre del área responsable
 
     // Datos de la gestión
-    tipoGestion: string;
-    prioridad?: string;
-    estadoGestion?: string;
+    tipoGestion: string;              // texto legible: Recepción, Evaluación, etc.
+    prioridad?: string;               // texto legible: Normal, Urgente, Muy urgente
+    /**
+     * estado: texto legible del estado de gestión (Pendiente, En proceso, etc.)
+     * El backend serializa estadoGestion como "estado" en el JSON de respuesta.
+     */
+    estado?: string | null;
     fechaRecepcion?: string;
     fechaLimite?: string | null;
     fechaResolucion?: string | null;
@@ -29,15 +41,19 @@ export interface GestionTramite {
 
     // Auditoría
     fechaRegistro?: string;
-    fechaActualizacion?: string;
-    fechaEliminacion?: string;
-    fechaRestauracion?: string;
+    fechaActualizacion?: string | null;
+    fechaEliminacion?: string | null;
+    fechaRestauracion?: string | null;
 
-    // Internos — para uso del formulario y la tabla (no vienen todos del JSON de respuesta)
+    // Campos internos para el formulario (no vienen del JSON de respuesta del listado)
     idAreaResponsable?: number | null;
+    nombresResponsable?: string | null;
     apellidoPaternoResponsable?: string | null;
     apellidoMaternoResponsable?: string | null;
-    estado?: string;
+
+    // estadoGestion: código interno del estado (PENDIENTE, EN_PROCESO, etc.)
+    // Se deriva del campo "estado" del JSON para usarlo en filtros y formulario.
+    estadoGestion?: string;
 }
 
 /**

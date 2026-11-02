@@ -48,6 +48,9 @@ export class GestionTramiteComponent implements OnInit {
     }
 
     private readonly notPastDate = (control: AbstractControl): ValidationErrors | null => {
+        // Solo aplicar la validación de fecha pasada si el componente está en modo "nuevo"
+        // Al editar, permitir fechas pasadas ya que el registro puede tener fechas anteriores
+        if (this.editandoId !== null) return null;
         const value = control.value as string | null;
         if (!value) return null;
         if (value < this.fechaMaxima)    return { pastDate: true };
@@ -153,8 +156,11 @@ export class GestionTramiteComponent implements OnInit {
         return this.areas.find(a => a.idArea === id)?.nombre ?? `Área #${id}`;
     }
 
-    /** Nombre completo del responsable concatenando los tres campos separados. */
+    /** Nombre completo del responsable — usa el campo responsable del backend si está disponible. */
     nombreResponsable(g: GestionTramite): string {
+        // El campo "responsable" viene ya calculado desde el backend
+        if (g.responsable) return g.responsable;
+        // Fallback: construir desde los campos parciales si están disponibles
         const partes = [
             g.nombresResponsable,
             g.apellidoPaternoResponsable,
@@ -248,9 +254,13 @@ export class GestionTramiteComponent implements OnInit {
                 String(r.idGestion ?? '').includes(q) ||
                 (r.numeroDocumento    ?? '').toLowerCase().includes(q) ||
                 (r.apellidoPaterno    ?? '').toLowerCase().includes(q) ||
+                (r.apellidoMaterno    ?? '').toLowerCase().includes(q) ||
+                (r.nombres           ?? '').toLowerCase().includes(q) ||
+                (r.responsable       ?? '').toLowerCase().includes(q) ||
                 (r.nombresResponsable ?? '').toLowerCase().includes(q) ||
                 (r.tipoGestion        ?? '').toLowerCase().includes(q) ||
                 (r.estadoGestion      ?? '').toLowerCase().includes(q) ||
+                (r.estado             ?? '').toLowerCase().includes(q) ||
                 this.nombreResponsable(r).toLowerCase().includes(q) ||
                 (r.areaResponsable    ?? '').toLowerCase().includes(q);
             return matchTexto && (!this.filtroEstado || r.estadoGestion === this.filtroEstado);
