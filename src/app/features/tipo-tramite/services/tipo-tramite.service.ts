@@ -35,11 +35,11 @@ export class TipoTramiteService {
     }
 
     eliminar(id: number): Observable<TipoTramite> {
-        return this.http.delete<any>(`${this.api}/${id}`).pipe(map(r => this.normalize(r)));
+        return this.http.patch<any>(`${this.api}/${id}/estado`, { estado: false }).pipe(map(r => this.normalize(r)));
     }
 
     restaurar(id: number): Observable<TipoTramite> {
-        return this.http.patch<any>(`${this.api}/${id}/restaurar`, {}).pipe(map(r => this.normalize(r)));
+        return this.http.patch<any>(`${this.api}/${id}/estado`, { estado: true }).pipe(map(r => this.normalize(r)));
     }
 
     private normalize(r: any): TipoTramite {
@@ -57,6 +57,7 @@ export class TipoTramiteService {
             fechaRegistro:      r?.fechaRegistro    ?? r?.fecha_registro     ?? '',
             fechaActualizacion: r?.fechaActualizacion ?? r?.fecha_actualizacion ?? undefined,
             fechaEliminacion:   r?.fechaEliminacion  ?? r?.fecha_eliminacion   ?? undefined,
+            fechaRestauracion:  r?.fechaRestauracion ?? r?.fecha_restauracion  ?? undefined,
         };
     }
 }
