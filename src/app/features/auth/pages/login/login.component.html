@@ -1,175 +1,242 @@
+
 <div class="login-root">
 
-  <!-- ══════════════════════════════
-       PANEL IZQUIERDO
-  ══════════════════════════════ -->
-  <div class="panel-left">
+  <!-- PANEL IZQUIERDO -->
+  <section class="panel-left" aria-label="Información del sistema">
 
-    <!-- SVG de fondo decorativo -->
-    <svg class="bg-svg" viewBox="0 0 1000 730"
-         preserveAspectRatio="xMidYMid slice"
-         xmlns="http://www.w3.org/2000/svg"
-         aria-hidden="true">
-      <polygon points="0,400 220,730 0,730" fill="rgba(30,0,5,.45)"/>
-      <polygon points="0,0 480,0 600,730 0,730" fill="rgba(50,0,8,.28)"/>
-      <polygon points="760,0 1000,0 1000,730 660,730" fill="rgba(255,253,251,1)"/>
-      <polygon points="740,0 760,0 640,730 620,730" fill="#FFC928" opacity="0.85"/>
-      <line x1="720" y1="0" x2="600" y2="730" stroke="#FFC928" stroke-width="2" opacity="0.45"/>
-      <line x1="690" y1="0" x2="570" y2="730" stroke="#FFC928" stroke-width="1" opacity="0.22"/>
-      <line x1="250" y1="0" x2="200" y2="730" stroke="#FFC928" stroke-width="1.2" opacity="0.2"/>
-      <line x1="280" y1="0" x2="230" y2="730" stroke="#FFC928" stroke-width="0.8" opacity="0.13"/>
-      <circle cx="900" cy="630" r="310" fill="none" stroke="rgba(200,30,50,.22)" stroke-width="1.5"/>
-      <circle cx="900" cy="630" r="220" fill="none" stroke="rgba(200,30,50,.16)" stroke-width="1"/>
-      <circle cx="860" cy="80" r="200" fill="none" stroke="rgba(180,20,40,.13)" stroke-width="1"/>
-      <polygon points="450,180 680,0 680,180 510,420" fill="rgba(100,0,15,.22)"/>
-      <polygon points="800,520 1000,400 1000,730 700,730" fill="rgba(220,150,160,.06)"/>
+    <!-- Fondo decorativo -->
+    <svg
+      class="bg-svg"
+      viewBox="0 0 1000 730"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polygon points="0,400 220,730 0,730" fill="rgba(30,0,5,.45)" />
+      <polygon points="0,0 480,0 600,730 0,730" fill="rgba(50,0,8,.28)" />
+      <polygon points="760,0 1000,0 1000,730 660,730" fill="rgba(255,253,251,1)" />
+      <polygon points="740,0 760,0 640,730 620,730" fill="#FFC928" opacity="0.85" />
+
+      <line x1="720" y1="0" x2="600" y2="730" stroke="#FFC928" stroke-width="2" opacity="0.45" />
+      <line x1="690" y1="0" x2="570" y2="730" stroke="#FFC928" stroke-width="1" opacity="0.22" />
+      <line x1="250" y1="0" x2="200" y2="730" stroke="#FFC928" stroke-width="1.2" opacity="0.2" />
+      <line x1="280" y1="0" x2="230" y2="730" stroke="#FFC928" stroke-width="0.8" opacity="0.13" />
+
+      <circle cx="900" cy="630" r="310" fill="none" stroke="rgba(200,30,50,.22)" stroke-width="1.5" />
+      <circle cx="900" cy="630" r="220" fill="none" stroke="rgba(200,30,50,.16)" stroke-width="1" />
+      <circle cx="860" cy="80" r="200" fill="none" stroke="rgba(180,20,40,.13)" stroke-width="1" />
+
+      <polygon points="450,180 680,0 680,180 510,420" fill="rgba(100,0,15,.22)" />
+      <polygon points="800,520 1000,400 1000,730 700,730" fill="rgba(220,150,160,.06)" />
     </svg>
 
-    <!-- Puntos decorativos dorados -->
+    <!-- Elementos decorativos -->
     <div class="dot-grid dot-grid--tl" aria-hidden="true"></div>
     <div class="dot-grid dot-grid--bl" aria-hidden="true"></div>
 
-    <!-- CONTENIDO -->
+    <!-- Contenido principal -->
     <div class="panel-left__content">
 
-      <!-- Eyebrow -->
       <div class="eyebrow-row">
         <span class="eyebrow-text">Área privada</span>
         <span class="eyebrow-line" aria-hidden="true"></span>
       </div>
 
-      <!-- Título grande -->
       <h1 class="hero-title">
         <span class="hero-title__line1">Sistema de</span>
         <span class="hero-title__line2">Gestión FUT</span>
       </h1>
+
       <div class="hero-underline" aria-hidden="true"></div>
 
-      <!-- Subtítulo -->
       <p class="hero-subtitle">
-        Panel exclusivo para el personal administrativo<br />
-        de la I.&nbsp;E.&nbsp;N.°&nbsp;20191 "Alfonso Ugarte".
+        Panel exclusivo para el personal administrativo
+        <br />
+        de la I. E. N.° 20191 "Alfonso Ugarte".
       </p>
 
-      <!-- Tarjetas -->
+      <!-- Funcionalidades del sistema -->
       <div class="info-cards">
 
-        <div class="info-card">
+        <article class="info-card">
           <div class="info-card__body">
             <strong>Gestión de trámites</strong>
-            <span>Revisa y actualiza solicitudes</span>
+            <span>Revisa y actualiza solicitudes.</span>
           </div>
-        </div>
+        </article>
 
-        <div class="info-card">
+        <article class="info-card">
           <div class="info-card__body">
             <strong>Reportes y estadísticas</strong>
-            <span>Visualiza datos del sistema</span>
+            <span>Visualiza información del sistema.</span>
           </div>
-        </div>
+        </article>
 
-        <div class="info-card">
+        <article class="info-card">
           <div class="info-card__body">
             <strong>Gestión de usuarios</strong>
-            <span>Administra el acceso al sistema</span>
+            <span>Administra los accesos al sistema.</span>
           </div>
-        </div>
+        </article>
 
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ══════════════════════════════
-       PANEL DERECHO
-  ══════════════════════════════ -->
-  <div class="panel-right">
+  <!-- PANEL DERECHO -->
+  <section class="panel-right" aria-label="Acceso administrativo">
 
-    <svg class="right-deco" viewBox="0 0 800 730"
-         preserveAspectRatio="xMidYMid slice"
-         xmlns="http://www.w3.org/2000/svg"
-         aria-hidden="true">
-      <polygon points="0,540 240,730 0,730" fill="rgba(200,120,130,.055)"/>
-      <polygon points="800,480 800,730 480,730" fill="rgba(200,120,130,.045)"/>
-      <circle cx="720" cy="365" r="240" fill="none" stroke="rgba(140,0,22,.1)" stroke-width="1.5"/>
-      <circle cx="720" cy="365" r="160" fill="none" stroke="rgba(140,0,22,.07)" stroke-width="1"/>
+    <!-- Decoración de fondo -->
+    <svg
+      class="right-deco"
+      viewBox="0 0 800 730"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polygon points="0,540 240,730 0,730" fill="rgba(200,120,130,.055)" />
+      <polygon points="800,480 800,730 480,730" fill="rgba(200,120,130,.045)" />
+
+      <circle cx="720" cy="365" r="240" fill="none" stroke="rgba(140,0,22,.1)" stroke-width="1.5" />
+      <circle cx="720" cy="365" r="160" fill="none" stroke="rgba(140,0,22,.07)" stroke-width="1" />
     </svg>
 
     <div class="dot-grid dot-grid--right-br" aria-hidden="true"></div>
 
-    <!-- Tarjeta login -->
+    <!-- Formulario de acceso -->
     <div class="login-card">
 
       <span class="card-eyebrow">Área privada</span>
+
       <h2 class="card-title">Acceso administrativo</h2>
-      <p class="card-subtitle">Ingreso exclusivo para secretaría y dirección.</p>
+
+      <p class="card-subtitle">
+        Ingreso exclusivo para secretaría y dirección.
+      </p>
 
       <hr class="card-divider" />
 
-      <form (ngSubmit)="submit()" novalidate>
+      <form
+        (ngSubmit)="submit()"
+        #loginForm="ngForm"
+        novalidate
+      >
 
-        <!-- Usuario -->
+        <!-- Campo de usuario -->
         <div class="form-field">
-          <label class="form-label" for="username">Usuario</label>
+
+          <label class="form-label" for="username">
+            Usuario
+          </label>
+
           <div class="input-wrap">
             <input
-              id="username" name="username"
-              type="text" class="form-input"
+              id="username"
+              name="username"
+              type="text"
+              class="form-input"
               [(ngModel)]="username"
               autocomplete="username"
               placeholder="Ej. secretaria.demo"
               required
+              aria-required="true"
             />
           </div>
+
         </div>
 
-        <!-- Contraseña -->
+        <!-- Campo de contraseña -->
         <div class="form-field">
-          <label class="form-label" for="password">Contraseña</label>
+
+          <label class="form-label" for="password">
+            Contraseña
+          </label>
+
           <div class="input-wrap">
             <input
-              id="password" name="password"
+              id="password"
+              name="password"
               [type]="showPw ? 'text' : 'password'"
               class="form-input"
               [(ngModel)]="password"
               autocomplete="current-password"
-              placeholder="••••••••"
+              placeholder="Ingresa tu contraseña"
               required
+              aria-required="true"
             />
-            <button type="button" class="toggle-pw"
-                    (click)="showPw = !showPw"
-                    [attr.aria-label]="showPw ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+
+            <button
+              type="button"
+              class="toggle-pw"
+              (click)="showPw = !showPw"
+              [attr.aria-label]="showPw ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="showPw"
+            >
               {{ showPw ? 'Ocultar' : 'Mostrar' }}
             </button>
           </div>
+
         </div>
 
-        <!-- Error -->
-        <div *ngIf="error" class="form-error" role="alert">
+        <!-- Mensaje de error -->
+        <div
+          *ngIf="error"
+          class="form-error"
+          role="alert"
+          aria-live="assertive"
+        >
           {{ error }}
         </div>
 
-        <!-- Botones -->
+        <!-- Acciones del formulario -->
         <div class="form-actions">
-          <button class="btn btn--primary" [disabled]="loading" type="submit">
+
+          <button
+            class="btn btn--primary"
+            type="submit"
+            [disabled]="loading || !loginForm.valid"
+          >
             {{ loading ? 'Ingresando…' : 'Iniciar sesión' }}
           </button>
-          <a class="btn btn--secondary" routerLink="/">Volver al inicio</a>
+
+          <a
+            class="btn btn--secondary"
+            routerLink="/"
+          >
+            Volver al inicio
+          </a>
+
         </div>
 
       </form>
 
-      <!-- Aviso demo -->
-      <div class="demo-notice" role="note">
+      <!-- Aviso de demostración -->
+      <aside class="demo-notice" role="note">
         <p>
-          Modo demostración: usa <strong>directora.demo</strong> /
-          <strong>DirectoraDemo2026!</strong> o <strong>secretaria.demo</strong> /
-          <strong>SecretariaDemo2026!</strong> (solo disponible sin backend).
-          Este acceso no es seguro para datos reales y deberá conectarse al
-          backend antes de publicar el sistema.
+          <strong>Modo demostración:</strong>
+          utiliza las siguientes credenciales únicamente si el acceso
+          de prueba está habilitado sin backend.
         </p>
-      </div>
+
+        <p>
+          <strong>Directora:</strong>
+          directora.demo / DirectoraDemo2026!
+        </p>
+
+        <p>
+          <strong>Secretaría:</strong>
+          secretaria.demo / SecretariaDemo2026!
+        </p>
+
+        <p>
+          Este acceso es solo para pruebas. No debe utilizarse
+          con información real ni publicarse con estas credenciales.
+        </p>
+      </aside>
 
     </div>
-  </div>
+  </section>
 
 </div>
