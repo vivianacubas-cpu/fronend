@@ -13,7 +13,7 @@ import {
     type SolicitanteEntrada,
     type TipoDocumento,
     type Ubigeo,
-} from '../../../solicitante';
+} from '../../../solicitantes';
 const MAX_PDF_BYTES = 4 * 1024 * 1024;
 @Component({ standalone: true, imports: [CommonModule, ReactiveFormsModule, RouterLink, SolicitanteFormComponent], templateUrl: './fut-create.component.html', styleUrl: './fut-create.component.css' })
 export class FutCreateComponent {
