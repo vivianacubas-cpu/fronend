@@ -1,0 +1,41 @@
+@if (loading) {
+  <div class="dt-loading" role="status" aria-label="Cargando datos…">
+    <span class="dt-spinner" aria-hidden="true"></span>
+    Cargando…
+  </div>
+} @else if (data.length === 0) {
+  <p class="dt-empty" role="status">{{ emptyMessage }}</p>
+} @else {
+  <div class="dt-wrapper">
+    <table class="dt-table" role="grid">
+      <thead>
+        <tr>
+          @for (col of columns; track col.key) {
+            <th
+              scope="col"
+              [class.dt-th--sortable]="col.sortable"
+              (click)="col.sortable && sort(col.key)"
+              [attr.aria-sort]="col.sortable ? (sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none') : null"
+            >
+              {{ col.label }}
+              @if (col.sortable) {
+                <span class="dt-sort-ico" aria-hidden="true">
+                  {{ sortKey === col.key ? (sortDir === 'asc' ? '↑' : '↓') : '⇅' }}
+                </span>
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of data; track $index) {
+          <tr (click)="rowClick.emit(row)" class="dt-row" tabindex="0">
+            @for (col of columns; track col.key) {
+              <td>{{ getValue(row, col.key) }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

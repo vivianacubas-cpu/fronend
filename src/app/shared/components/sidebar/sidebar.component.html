@@ -1,0 +1,29 @@
+<aside class="sidebar" aria-label="Menú administrativo">
+  <p class="sidebar__title">Área administrativa</p>
+
+  <nav class="sidebar__nav">
+    @for (item of items; track item.route) {
+      <a
+        [routerLink]="item.route"
+        class="sidebar__link"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span class="sidebar__label">{{ item.label }}</span>
+        <span class="sidebar__arrow" aria-hidden="true">›</span>
+      </a>
+    }
+
+    <hr class="sidebar__divider" />
+
+    <button
+      type="button"
+      class="sidebar__link sidebar__link--logout"
+      (click)="onLogout()"
+      aria-label="Cerrar sesión"
+    >
+      <span class="sidebar__label">Cerrar sesión</span>
+      <span class="sidebar__arrow" aria-hidden="true">›</span>
+    </button>
+  </nav>
+</aside>
