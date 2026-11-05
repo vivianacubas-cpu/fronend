@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../core/guards/auth.guard';
-export const REPORTS_ROUTES: Routes = [
+
+/**
+ * Rutas administrativas para reportes (hijas de /admin).
+ */
+export const REPORTS_ADMIN_ROUTES: Routes = [
     {
-        path: 'admin/reportes',
-        loadComponent: () => import('./pages/reports/reports.component').then(m => m.ReportsComponent),
-        canActivate: [authGuard],
+        path: 'reportes',
+        loadComponent: () =>
+            import('./pages/reports/reports.component').then(
+                m => m.ReportsComponent,
+            ),
     },
 ];

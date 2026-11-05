@@ -3,9 +3,17 @@ import { authGuard } from './core/guards/auth.guard';
 import { AUTH_ROUTES } from './features/auth/auth.routes';
 import { HOME_ROUTES } from './features/home/home.routes';
 import { LANDING_ROUTES } from './features/landing/landing.routes';
-import { REPORTS_ROUTES } from './features/reports/reports.routes';
 import { TRAMITE_ROUTES } from './features/tramite/tramite.routes';
-import { USERS_ROUTES } from './features/users/users.routes';
+import {
+    SOLICITUDES_FUT_PUBLIC_ROUTES,
+    SOLICITUDES_FUT_ADMIN_ROUTES,
+} from './features/solicitudes-fut/solicitudes-fut.routes';
+import { SEGUIMIENTO_ROUTES } from './features/seguimiento/seguimiento.routes';
+import { SOLICITANTES_ADMIN_ROUTES } from './features/solicitantes/solicitantes.routes';
+import { TIPO_TRAMITE_ADMIN_ROUTES } from './features/tipo-tramite/tipo-tramite.routes';
+import { GESTION_TRAMITE_ADMIN_ROUTES } from './features/gestion-tramite/gestion-tramite.routes';
+import { REPORTS_ADMIN_ROUTES } from './features/reports/reports.routes';
+import { USERS_ADMIN_ROUTES } from './features/users/users.routes';
 
 export const routes: Routes = [
     // ── Rutas públicas ──────────────────────────────────────────────────────
@@ -13,24 +21,8 @@ export const routes: Routes = [
     ...LANDING_ROUTES,
     ...TRAMITE_ROUTES,
     ...AUTH_ROUTES,
-
-    // ── Nueva solicitud (pública) ────────────────────────────────────────────
-    {
-        path: 'fut/nuevo',
-        loadComponent: () =>
-            import('./features/fut/pages/fut-create/fut-create.component').then(
-                m => m.FutCreateComponent,
-            ),
-    },
-
-    // ── Seguimiento público ──────────────────────────────────────────────────
-    {
-        path: 'seguimiento',
-        loadComponent: () =>
-            import('./features/tracking/pages/tracking/tracking.component').then(
-                m => m.TrackingComponent,
-            ),
-    },
+    ...SOLICITUDES_FUT_PUBLIC_ROUTES,
+    ...SEGUIMIENTO_ROUTES,
 
     // ── Área administrativa — todas las páginas comparten el AdminLayoutComponent ──
     {
@@ -41,62 +33,18 @@ export const routes: Routes = [
             ),
         canActivate: [authGuard],
         children: [
-            // Solicitudes FUT (listado)
-            {
-                path: 'tramites',
-                loadComponent: () =>
-                    import('./features/fut/pages/fut-list/fut-list.component').then(
-                        m => m.FutListComponent,
-                    ),
-            },
-            // Detalle de solicitud
-            {
-                path: 'tramites/:id',
-                loadComponent: () =>
-                    import('./features/fut/pages/fut-detail/fut-detail.component').then(
-                        m => m.FutDetailComponent,
-                    ),
-            },
+            // Solicitudes FUT (listado y detalle)
+            ...SOLICITUDES_FUT_ADMIN_ROUTES,
             // Solicitantes
-            {
-                path: 'solicitantes',
-                loadComponent: () =>
-                    import('./features/solicitante/pages/solicitante/solicitante.component').then(
-                        m => m.SolicitanteComponent,
-                    ),
-            },
+            ...SOLICITANTES_ADMIN_ROUTES,
             // Tipos de trámite
-            {
-                path: 'tipo-tramite',
-                loadComponent: () =>
-                    import('./features/tipo-tramite/pages/tipo-tramite/tipo-tramite.component').then(
-                        m => m.TipoTramiteComponent,
-                    ),
-            },
-            // Gestión de Trámite FUT
-            {
-                path: 'gestion-tramite',
-                loadComponent: () =>
-                    import('./features/tracking/pages/gestion-tramite/gestion-tramite.component').then(
-                        m => m.GestionTramiteComponent,
-                    ),
-            },
+            ...TIPO_TRAMITE_ADMIN_ROUTES,
+            // Gestión de Trámite
+            ...GESTION_TRAMITE_ADMIN_ROUTES,
             // Reportes
-            {
-                path: 'reportes',
-                loadComponent: () =>
-                    import('./features/reports/pages/reports/reports.component').then(
-                        m => m.ReportsComponent,
-                    ),
-            },
+            ...REPORTS_ADMIN_ROUTES,
             // Usuarios
-            {
-                path: 'usuarios',
-                loadComponent: () =>
-                    import('./features/users/pages/user-list/user-list.component').then(
-                        m => m.UserListComponent,
-                    ),
-            },
+            ...USERS_ADMIN_ROUTES,
             // Redirigir /admin → /admin/tramites por defecto
             { path: '', redirectTo: 'tramites', pathMatch: 'full' },
         ],

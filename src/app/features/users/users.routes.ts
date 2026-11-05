@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../core/guards/auth.guard';
-export const USERS_ROUTES: Routes = [
+
+/**
+ * Rutas administrativas para la gestión de usuarios (hijas de /admin).
+ */
+export const USERS_ADMIN_ROUTES: Routes = [
     {
-        path: 'admin/usuarios',
-        loadComponent: () => import('./pages/user-list/user-list.component').then(m => m.UserListComponent),
-        canActivate: [authGuard],
+        path: 'usuarios',
+        loadComponent: () =>
+            import('./pages/user-list/user-list.component').then(
+                m => m.UserListComponent,
+            ),
     },
 ];

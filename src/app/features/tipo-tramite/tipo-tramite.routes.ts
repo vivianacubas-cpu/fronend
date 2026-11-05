@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../core/guards/auth.guard';
-export const TIPO_TRAMITE_ROUTES: Routes = [
+
+/**
+ * Rutas administrativas para los tipos de trámite (hijas de /admin).
+ */
+export const TIPO_TRAMITE_ADMIN_ROUTES: Routes = [
     {
-        path: 'admin/tipo-tramite',
-        loadComponent: () => import('./pages/tipo-tramite/tipo-tramite.component').then(m => m.TipoTramiteComponent),
-        canActivate: [authGuard],
+        path: 'tipo-tramite',
+        loadComponent: () =>
+            import('./pages/tipo-tramite/tipo-tramite.component').then(
+                m => m.TipoTramiteComponent,
+            ),
     },
 ];
