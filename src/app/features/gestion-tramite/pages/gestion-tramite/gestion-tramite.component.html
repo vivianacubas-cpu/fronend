@@ -278,7 +278,7 @@
                 <span class="error" *ngIf="invalido('fundamentoDecision')">El fundamento es obligatorio para este estado.</span>
                 <div class="field-meta">
                   <span></span>
-                  <small>{{ form.controls.fundamentoDecision.value?.length ?? 0 }}/2000</small>
+                  <small>{{ (form.controls.fundamentoDecision.value || '').length }}/2000</small>
                 </div>
               </div>
             </div>
@@ -292,7 +292,7 @@
                 <span class="error" *ngIf="invalido('observaciones')">Las observaciones son obligatorias.</span>
                 <div class="field-meta">
                   <span></span>
-                  <small>{{ form.controls.observaciones.value?.length ?? 0 }}/2000</small>
+                  <small>{{ (form.controls.observaciones.value || '').length }}/2000</small>
                 </div>
               </div>
             </div>
