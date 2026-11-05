@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { FutService } from '../../../fut';
+import { FutService } from '../../../solicitudes-fut';
 import { statusInfo } from '../../../../shared/utils/status';
 @Component({ standalone: true, imports: [CommonModule, FormsModule, RouterLink], templateUrl: './tracking.component.html', styleUrl: './tracking.component.css' })
 export class TrackingComponent {

@@ -1,37 +1,63 @@
 /**
  * Respuesta del backend para una gestión de trámite FUT.
- * Campos que devuelve GestionTramiteResponse (record Java):
- *   idGestion, numero, numeroDocumento, apellidoPaterno, apellidoMaterno,
- *   nombres, responsable, areaResponsable, fechaRecepcion, tipoGestion,
- *   prioridad, fechaLimite, estado (texto legible del estadoGestion),
- *   decision, fechaResolucion, fechaRegistro, fechaActualizacion,
- *   fechaEliminacion, fechaRestauracion.
+ * Campos que devuelve GestionTramiteResponse (record Java) — en orden del JSON:
+ *   idGestion, idSolicitante, idAreaResponsable,
+ *   nombresResponsable, apellidoPaternoResponsable, apellidoMaternoResponsable,
+ *   numero, numeroDocumento, apellidoPaterno, apellidoMaterno, nombres,
+ *   responsable, areaResponsable, fechaRecepcion, tipoGestion, prioridad,
+ *   fechaLimite, estado, decision, fundamentoDecision, observaciones,
+ *   fechaResolucion, fechaRegistro, fechaActualizacion, fechaEliminacion, fechaRestauracion.
  */
 export interface GestionTramite {
     idGestion?: number;
+
+    // IDs internos — vienen en el response para pre-cargar el formulario de edición
+    idSolicitante: number;
+    idAreaResponsable?: number | null;
+
+    // Campos parciales del responsable — vienen en el response para pre-cargar edición
+    nombresResponsable?: string | null;
+    apellidoPaternoResponsable?: string | null;
+    apellidoMaternoResponsable?: string | null;
 
     // Campo correlativo de fila (del backend)
     numero?: number;
 
     // Datos del solicitante (vienen del GestionTramiteResponse)
-    idSolicitante: number;
     numeroDocumento?: string | null;
     apellidoPaterno?: string | null;   // apellido paterno del SOLICITANTE
     apellidoMaterno?: string | null;   // apellido materno del SOLICITANTE
     nombres?: string | null;           // nombres del SOLICITANTE
 
     // Responsable de la gestión
-    responsable?: string | null;       // nombre completo del responsable (nombres + apellidos)
+    responsable?: string | null;       // nombre completo del responsable (calculado por backend)
     areaResponsable?: string | null;   // nombre del área responsable
 
     // Datos de la gestión
-    tipoGestion: string;              // texto legible: Recepción, Evaluación, etc.
-    prioridad?: string;               // texto legible: Normal, Urgente, Muy urgente
     /**
-     * estado: texto legible del estado de gestión (Pendiente, En proceso, etc.)
-     * El backend serializa estadoGestion como "estado" en el JSON de respuesta.
+     * tipoGestion: código interno derivado del texto legible del backend.
+     * El backend envía texto legible ("Recepción", "Evaluación", etc.).
+     * El servicio lo normaliza a código interno (RECEPCION, EVALUACION, etc.)
+     * para que los selectores del formulario funcionen correctamente.
+     */
+    tipoGestion: string;
+    /**
+     * prioridad: código interno derivado del texto legible del backend.
+     * El backend envía "Normal", "Urgente", "Muy urgente".
+     * El servicio los normaliza a NORMAL, URGENTE, MUY_URGENTE.
+     */
+    prioridad?: string;
+    /**
+     * estado: texto legible del estado de gestión que devuelve el backend.
+     * Valores posibles: "Pendiente", "En proceso", "Observado", "Aprobado", "Rechazado".
      */
     estado?: string | null;
+    /**
+     * estadoGestion: código interno derivado de "estado" para filtros y selector del formulario.
+     * Valores posibles: PENDIENTE, EN_PROCESO, OBSERVADO, APROBADO, RECHAZADO.
+     */
+    estadoGestion?: string;
+
     fechaRecepcion?: string;
     fechaLimite?: string | null;
     fechaResolucion?: string | null;
@@ -44,25 +70,14 @@ export interface GestionTramite {
     fechaActualizacion?: string | null;
     fechaEliminacion?: string | null;
     fechaRestauracion?: string | null;
-
-    // Campos internos para el formulario (no vienen del JSON de respuesta del listado)
-    idAreaResponsable?: number | null;
-    nombresResponsable?: string | null;
-    apellidoPaternoResponsable?: string | null;
-    apellidoMaternoResponsable?: string | null;
-
-    // estadoGestion: código interno del estado (PENDIENTE, EN_PROCESO, etc.)
-    // Se deriva del campo "estado" del JSON para usarlo en filtros y formulario.
-    estadoGestion?: string;
 }
 
 /**
  * Payload de entrada para crear o actualizar una gestión.
- * Coincide con GestionTramiteRequest.java del backend.
+ * Coincide con GestionTramiteFormRequest.java del backend.
  */
 export interface GestionTramiteRequest {
     idSolicitante: number;
-    nombreResponsable?: string | null;
     nombresResponsable?: string | null;
     apellidoPaternoResponsable?: string | null;
     apellidoMaternoResponsable?: string | null;

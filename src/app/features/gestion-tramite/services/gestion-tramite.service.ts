@@ -81,7 +81,7 @@ export class GestionTramiteService {
         );
     }
 
-    /** GET /v1/api/gestion-tramite/catalogo/areas — áreas (cacheado) */
+    /** GET /v1/api/gestion-tramite/catalogo/areas — áreas (cacheado en memoria por sesión) */
     catalogoAreas(): Observable<AreaCatalogo[]> {
         if (!this.areas$) {
             this.areas$ = this.http
@@ -95,14 +95,18 @@ export class GestionTramiteService {
      * Normaliza la respuesta del backend al modelo GestionTramite del frontend.
      *
      * El backend (GestionTramiteResponse record) envía en el JSON:
-     *   - "estado"          → texto legible del estadoGestion (Pendiente, En proceso, etc.)
-     *   - "tipoGestion"     → texto legible (Recepción, Evaluación, etc.)
-     *   - "prioridad"       → texto legible (Normal, Urgente, Muy urgente)
-     *   - "nombres"         → nombres del SOLICITANTE
-     *   - "apellidoPaterno" → apellido paterno del SOLICITANTE
-     *   - "apellidoMaterno" → apellido materno del SOLICITANTE
-     *   - "responsable"     → nombre completo del responsable
-     *   - "areaResponsable" → nombre del área
+     *   - "idSolicitante"       → ID del solicitante (para pre-cargar formulario edición)
+     *   - "idAreaResponsable"   → ID del área (para pre-cargar selector edición)
+     *   - "nombresResponsable"  → nombres del responsable (para pre-cargar formulario edición)
+     *   - "apellidoPaternoResponsable" / "apellidoMaternoResponsable" → idem
+     *   - "estado"              → texto legible del estadoGestion ("Pendiente", "En proceso", etc.)
+     *   - "tipoGestion"         → texto legible ("Recepción", "Evaluación", etc.)
+     *   - "prioridad"           → texto legible ("Normal", "Urgente", "Muy urgente")
+     *   - "nombres"             → nombres del SOLICITANTE
+     *   - "apellidoPaterno"     → apellido paterno del SOLICITANTE
+     *   - "apellidoMaterno"     → apellido materno del SOLICITANTE
+     *   - "responsable"         → nombre completo calculado del RESPONSABLE
+     *   - "areaResponsable"     → nombre del área
      *
      * El formulario necesita los códigos internos (PENDIENTE, EN_PROCESO, etc.)
      * para pre-cargar los selectores correctamente.
@@ -121,8 +125,8 @@ export class GestionTramiteService {
         const tipoGestionTexto: string = r['tipoGestion'] ?? '';
         const tipoGestionCodigo: string =
             TIPO_TEXTO_A_CODIGO[tipoGestionTexto]
-            ?? tipoGestionTexto.toUpperCase()
-            ?? '';
+            ?? tipoGestionTexto.toUpperCase().replace(/ /g, '_')
+            ?? tipoGestionTexto;
 
         // Prioridad: el JSON trae texto legible; derivar código para el formulario
         const prioridadTexto: string = r['prioridad'] ?? '';
@@ -131,51 +135,52 @@ export class GestionTramiteService {
             ?? prioridadTexto.toUpperCase().replace(/ /g, '_')
             ?? 'NORMAL';
 
+        // Campos parciales del responsable: el backend los envía directamente ahora.
+        // Fallback heurístico desde el campo "responsable" por compatibilidad.
+        const nombresResp = r['nombresResponsable']
+            ?? this.extraerNombresDeResponsable(r['responsable']);
+        const apellPaternoResp = r['apellidoPaternoResponsable']
+            ?? this.extraerApellidoPaternoDeResponsable(r['responsable']);
+        const apellMaternoResp = r['apellidoMaternoResponsable']
+            ?? this.extraerApellidoMaternoDeResponsable(r['responsable']);
+
         return {
-            idGestion:                  r['idGestion']         ?? undefined,
-            numero:                     r['numero']            ?? undefined,
-            idSolicitante:              r['idSolicitante']     ?? 0,
-
+            idGestion:                  r['idGestion']                ?? undefined,
+            // IDs para el formulario de edición
+            idSolicitante:              r['idSolicitante']            ?? 0,
+            idAreaResponsable:          r['idAreaResponsable']        ?? null,
+            // Campos parciales del responsable para el formulario de edición
+            nombresResponsable:         nombresResp,
+            apellidoPaternoResponsable: apellPaternoResp,
+            apellidoMaternoResponsable: apellMaternoResp,
+            // Correlativo de fila
+            numero:                     r['numero']                   ?? undefined,
             // Datos del SOLICITANTE — vienen directamente en el JSON de respuesta
-            numeroDocumento:            r['numeroDocumento']   ?? null,
-            apellidoPaterno:            r['apellidoPaterno']   ?? null,
-            apellidoMaterno:            r['apellidoMaterno']   ?? null,
-            nombres:                    r['nombres']           ?? null,
-
-            // Responsable
-            responsable:                r['responsable']       ?? null,
-            areaResponsable:            r['areaResponsable']   ?? null,
-
+            numeroDocumento:            r['numeroDocumento']          ?? null,
+            apellidoPaterno:            r['apellidoPaterno']          ?? null,
+            apellidoMaterno:            r['apellidoMaterno']          ?? null,
+            nombres:                    r['nombres']                  ?? null,
+            // Responsable — nombre completo calculado por el backend
+            responsable:                r['responsable']              ?? null,
+            areaResponsable:            r['areaResponsable']          ?? null,
             // Campos de gestión — códigos internos (para formulario y filtros)
             tipoGestion:                tipoGestionCodigo,
             prioridad:                  prioridadCodigo,
             estadoGestion:              estadoGestionCodigo,
-
-            // Texto legible para mostrar en tabla
+            // Texto legible del estado para mostrar en tabla
             estado:                     estadoTexto,
-
-            fechaRecepcion:             r['fechaRecepcion']    ?? undefined,
-            fechaLimite:                r['fechaLimite']       ?? null,
-            fechaResolucion:            r['fechaResolucion']   ?? null,
-            decision:                   r['decision']          ?? null,
-            fundamentoDecision:         r['fundamentoDecision'] ?? null,
-            observaciones:              r['observaciones']     ?? null,
-
+            // Fechas de gestión
+            fechaRecepcion:             r['fechaRecepcion']           ?? undefined,
+            fechaLimite:                r['fechaLimite']              ?? null,
+            fechaResolucion:            r['fechaResolucion']          ?? null,
+            decision:                   r['decision']                 ?? null,
+            fundamentoDecision:         r['fundamentoDecision']       ?? null,
+            observaciones:              r['observaciones']            ?? null,
             // Auditoría
-            fechaRegistro:              r['fechaRegistro']     ?? undefined,
-            fechaActualizacion:         r['fechaActualizacion'] ?? null,
-            fechaEliminacion:           r['fechaEliminacion']  ?? null,
-            fechaRestauracion:          r['fechaRestauracion'] ?? null,
-
-            // Campos parciales del responsable para el formulario
-            // Si el backend no los envía en el listado, se derivan del campo "responsable"
-            nombresResponsable:         r['nombresResponsable']
-                                        ?? this.extraerNombresDeResponsable(r['responsable']),
-            apellidoPaternoResponsable: r['apellidoPaternoResponsable']
-                                        ?? this.extraerApellidoPaternoDeResponsable(r['responsable']),
-            apellidoMaternoResponsable: r['apellidoMaternoResponsable']
-                                        ?? this.extraerApellidoMaternoDeResponsable(r['responsable']),
-            idAreaResponsable:          r['idAreaResponsable'] ?? null,
+            fechaRegistro:              r['fechaRegistro']            ?? undefined,
+            fechaActualizacion:         r['fechaActualizacion']       ?? null,
+            fechaEliminacion:           r['fechaEliminacion']         ?? null,
+            fechaRestauracion:          r['fechaRestauracion']        ?? null,
         };
     }
 

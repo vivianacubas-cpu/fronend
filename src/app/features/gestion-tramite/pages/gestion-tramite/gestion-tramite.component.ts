@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
     AbstractControl,
@@ -8,9 +8,10 @@ import {
     ValidationErrors,
     Validators,
 } from '@angular/forms';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { GestionTramiteService, AreaCatalogo } from '../../services/gestion-tramite.service';
-import { SolicitanteService } from '../../../solicitante/services/solicitante.service';
+import { SolicitanteService } from '../../../solicitantes/services/solicitante.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Solicitante } from '../../../../shared/interfaces/solicitante.model';
 import {
@@ -30,15 +31,17 @@ type Vista = 'listado' | 'formulario' | 'detalle' | 'eliminados';
     templateUrl: './gestion-tramite.component.html',
     styleUrl: './gestion-tramite.component.css',
 })
-export class GestionTramiteComponent implements OnInit {
+export class GestionTramiteComponent implements OnInit, OnDestroy {
 
-    get fechaMaxima(): string {
-        return this.formatoFecha(new Date());
-    }
+    // ── Fechas ─────────────────────────────────────────────────────────────────
 
+    /** Fecha mínima para campos de fecha en el formulario de NUEVO registro (hoy). */
+    get fechaMinima(): string { return this.formatoFecha(new Date()); }
+
+    /** Fecha máxima (fin de mes siguiente) para acotar rangos razonables. */
     get fechaMaximaMes(): string {
         const now = new Date();
-        return this.formatoFecha(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+        return this.formatoFecha(new Date(now.getFullYear(), now.getMonth() + 2, 0));
     }
 
     private formatoFecha(date: Date): string {
@@ -47,52 +50,57 @@ export class GestionTramiteComponent implements OnInit {
         return `${date.getFullYear()}-${month}-${day}`;
     }
 
+    /**
+     * Validador de fecha: en modo NUEVO no permite fechas anteriores a hoy.
+     * En modo EDICIÓN se omite para permitir fechas pasadas del registro existente.
+     */
     private readonly notPastDate = (control: AbstractControl): ValidationErrors | null => {
-        // Solo aplicar la validación de fecha pasada si el componente está en modo "nuevo"
-        // Al editar, permitir fechas pasadas ya que el registro puede tener fechas anteriores
-        if (this.editandoId !== null) return null;
+        if (this.editandoId !== null) return null;   // edición: permitir cualquier fecha
         const value = control.value as string | null;
         if (!value) return null;
-        if (value < this.fechaMaxima)    return { pastDate: true };
-        if (value > this.fechaMaximaMes) return { outsideCurrentMonth: true };
+        const today = this.fechaMinima;
+        if (value < today) return { pastDate: true };
         return null;
     };
 
-    // ── Catálogos estáticos ──────────────────────────────────────────────────
+    // ── Catálogos estáticos ───────────────────────────────────────────────────
     readonly tiposGestion   = TIPOS_GESTION;
     readonly prioridades    = PRIORIDADES;
     readonly estadosGestion = ESTADOS_GESTION;
 
-    // ── Catálogo áreas (dinámico) ────────────────────────────────────────────
+    // ── Catálogo áreas (dinámico) ─────────────────────────────────────────────
     areas: AreaCatalogo[] = [];
     cargandoAreas = false;
 
-    // ── Catálogo solicitantes (para el selector del formulario) ──────────────
+    // ── Catálogo solicitantes ─────────────────────────────────────────────────
     solicitantes: Solicitante[] = [];
     cargandoSolicitudes = false;
     solicitudMenuAbierto = false;
 
-    // ── Vista activa ─────────────────────────────────────────────────────────
+    // ── Vista activa ──────────────────────────────────────────────────────────
     vista: Vista = 'listado';
 
-    // ── Datos ────────────────────────────────────────────────────────────────
+    // ── Datos ─────────────────────────────────────────────────────────────────
     registros:  GestionTramite[] = [];
     filtered:   GestionTramite[] = [];
     eliminados: GestionTramite[] = [];
     detalle: GestionTramite | null = null;
     private vistaAnterior: Vista = 'listado';
 
-    // ── Filtros ──────────────────────────────────────────────────────────────
+    // ── Filtros ───────────────────────────────────────────────────────────────
     query        = '';
     filtroEstado = '';
 
-    // ── Estado UI ────────────────────────────────────────────────────────────
+    // ── Estado UI ─────────────────────────────────────────────────────────────
     cargando   = false;
     mensaje    = '';
     error      = '';
     editandoId: number | null = null;
 
-    // ── Formulario reactivo ──────────────────────────────────────────────────
+    // ── Suscripciones para limpieza ───────────────────────────────────────────
+    private subs = new Subscription();
+
+    // ── Formulario reactivo ───────────────────────────────────────────────────
     readonly form = this.fb.nonNullable.group({
         idSolicitante: [null as number | null, [Validators.required, Validators.min(1)]],
         nombresResponsable: [
@@ -113,12 +121,12 @@ export class GestionTramiteComponent implements OnInit {
         idAreaResponsable:  [null as number | null, [Validators.required]],
         fechaRecepcion:     ['' as string, [Validators.required, this.notPastDate]],
         tipoGestion:        ['' as string, [Validators.required]],
-        prioridad:          ['NORMAL'     as string, [Validators.required]],
+        prioridad:          ['NORMAL'    as string, [Validators.required]],
         fechaLimite:        ['' as string, [Validators.required, this.notPastDate]],
-        estadoGestion:      ['PENDIENTE'  as string, [Validators.required]],
-        decision:           ['' as string, [Validators.required, Validators.maxLength(500), Validators.pattern(/\S/)]],
-        fundamentoDecision: ['' as string, [Validators.required, Validators.maxLength(2000), Validators.pattern(/\S/)]],
-        fechaResolucion:    ['' as string, [Validators.required, this.notPastDate]],
+        estadoGestion:      ['PENDIENTE' as string, [Validators.required]],
+        decision:           ['' as string, [Validators.maxLength(500)]],
+        fundamentoDecision: ['' as string, [Validators.maxLength(2000)]],
+        fechaResolucion:    ['' as string],
         observaciones:      ['' as string, [Validators.required, Validators.maxLength(2000), Validators.pattern(/\S/)]],
     });
 
@@ -134,6 +142,52 @@ export class GestionTramiteComponent implements OnInit {
     ngOnInit(): void {
         this.cargar();
         this.cargarAreas();
+        // Actualizar validaciones condicionales cuando cambia el estado de gestión
+        this.subs.add(
+            this.form.controls.estadoGestion.valueChanges.subscribe(() =>
+                this.actualizarValidacionesCondicionales()
+            )
+        );
+    }
+
+    ngOnDestroy(): void {
+        this.subs.unsubscribe();
+    }
+
+    // ── Validaciones condicionales según estado ───────────────────────────────
+
+    /**
+     * decision, fundamentoDecision y fechaResolucion son obligatorias
+     * solo cuando el estado NO es PENDIENTE ni EN_PROCESO.
+     * En PENDIENTE o EN_PROCESO el trámite aún no tiene resolución.
+     */
+    private actualizarValidacionesCondicionales(): void {
+        const estado = this.form.controls.estadoGestion.value;
+        const esPendienteOEnProceso = estado === 'PENDIENTE' || estado === 'EN_PROCESO' || !estado;
+
+        if (esPendienteOEnProceso) {
+            this.form.controls.decision.clearValidators();
+            this.form.controls.decision.addValidators([Validators.maxLength(500)]);
+            this.form.controls.fundamentoDecision.clearValidators();
+            this.form.controls.fundamentoDecision.addValidators([Validators.maxLength(2000)]);
+            this.form.controls.fechaResolucion.clearValidators();
+        } else {
+            this.form.controls.decision.setValidators([
+                Validators.required, Validators.maxLength(500), Validators.pattern(/\S/)
+            ]);
+            this.form.controls.fundamentoDecision.setValidators([
+                Validators.required, Validators.maxLength(2000), Validators.pattern(/\S/)
+            ]);
+            this.form.controls.fechaResolucion.setValidators([Validators.required]);
+        }
+        this.form.controls.decision.updateValueAndValidity({ emitEvent: false });
+        this.form.controls.fundamentoDecision.updateValueAndValidity({ emitEvent: false });
+        this.form.controls.fechaResolucion.updateValueAndValidity({ emitEvent: false });
+    }
+
+    get requiereResolucion(): boolean {
+        const estado = this.form.controls.estadoGestion.value;
+        return estado !== 'PENDIENTE' && estado !== 'EN_PROCESO' && !!estado;
     }
 
     // ── Catálogo áreas ────────────────────────────────────────────────────────
@@ -158,9 +212,7 @@ export class GestionTramiteComponent implements OnInit {
 
     /** Nombre completo del responsable — usa el campo responsable del backend si está disponible. */
     nombreResponsable(g: GestionTramite): string {
-        // El campo "responsable" viene ya calculado desde el backend
         if (g.responsable) return g.responsable;
-        // Fallback: construir desde los campos parciales si están disponibles
         const partes = [
             g.nombresResponsable,
             g.apellidoPaternoResponsable,
@@ -240,9 +292,7 @@ export class GestionTramiteComponent implements OnInit {
             next: data => {
                 this.eliminados = [...data].sort((a, b) => (a.idGestion ?? 0) - (b.idGestion ?? 0));
             },
-            error: e => {
-                this.error = e?.error?.error ?? e?.message ?? 'No se pudieron cargar las gestiones eliminadas.';
-            },
+            error: () => { /* silencioso — eliminados es secundario */ },
         });
         this.cargarSolicitantes();
     }
@@ -271,6 +321,7 @@ export class GestionTramiteComponent implements OnInit {
     nuevo(): void {
         this.editandoId = null;
         this.resetForm();
+        this.actualizarValidacionesCondicionales();
         this.mensaje = '';
         this.error   = '';
         this.vista   = 'formulario';
@@ -280,21 +331,22 @@ export class GestionTramiteComponent implements OnInit {
     editar(g: GestionTramite): void {
         this.editandoId = g.idGestion ?? null;
         this.form.reset({
-            idSolicitante:             g.idSolicitante,
-            nombresResponsable:        g.nombresResponsable        ?? '',
-            apellidoPaternoResponsable:g.apellidoPaternoResponsable ?? '',
-            apellidoMaternoResponsable:g.apellidoMaternoResponsable ?? '',
-            idAreaResponsable:         g.idAreaResponsable         ?? null,
+            idSolicitante:             g.idSolicitante                ?? null,
+            nombresResponsable:        g.nombresResponsable           ?? '',
+            apellidoPaternoResponsable:g.apellidoPaternoResponsable   ?? '',
+            apellidoMaternoResponsable:g.apellidoMaternoResponsable   ?? '',
+            idAreaResponsable:         g.idAreaResponsable            ?? null,
             fechaRecepcion:            g.fechaRecepcion ? g.fechaRecepcion.substring(0, 10) : '',
-            tipoGestion:               g.tipoGestion,
-            prioridad:                 g.prioridad     ?? 'NORMAL',
-            fechaLimite:               g.fechaLimite   ? g.fechaLimite.substring(0, 10) : '',
-            estadoGestion:             g.estadoGestion ?? 'PENDIENTE',
-            decision:                  g.decision           ?? '',
-            fundamentoDecision:        g.fundamentoDecision ?? '',
+            tipoGestion:               g.tipoGestion                  ?? '',
+            prioridad:                 g.prioridad                    ?? 'NORMAL',
+            fechaLimite:               g.fechaLimite   ? g.fechaLimite.substring(0, 10)   : '',
+            estadoGestion:             g.estadoGestion                ?? 'PENDIENTE',
+            decision:                  g.decision                     ?? '',
+            fundamentoDecision:        g.fundamentoDecision           ?? '',
             fechaResolucion:           g.fechaResolucion ? g.fechaResolucion.substring(0, 10) : '',
-            observaciones:             g.observaciones      ?? '',
+            observaciones:             g.observaciones                ?? '',
         });
+        this.actualizarValidacionesCondicionales();
         this.mensaje = '';
         this.error   = '';
         this.vista   = 'formulario';
@@ -333,25 +385,26 @@ export class GestionTramiteComponent implements OnInit {
 
     // ── Guardar ───────────────────────────────────────────────────────────────
     guardar(): void {
+        this.actualizarValidacionesCondicionales();
         this.form.markAllAsTouched();
         if (this.form.invalid) { this.error = 'Revisa los campos obligatorios antes de guardar.'; return; }
 
         const v = this.form.getRawValue();
         const req: GestionTramiteRequest = {
             idSolicitante:             Number(v.idSolicitante),
-            nombresResponsable:        v.nombresResponsable.trim()        || null,
-            apellidoPaternoResponsable:v.apellidoPaternoResponsable.trim() || null,
-            apellidoMaternoResponsable:v.apellidoMaternoResponsable.trim() || null,
+            nombresResponsable:        v.nombresResponsable?.trim()         || null,
+            apellidoPaternoResponsable:v.apellidoPaternoResponsable?.trim() || null,
+            apellidoMaternoResponsable:v.apellidoMaternoResponsable?.trim() || null,
             idAreaResponsable:         v.idAreaResponsable ? Number(v.idAreaResponsable) : null,
-            fechaRecepcion:            v.fechaRecepcion || undefined,
+            fechaRecepcion:            v.fechaRecepcion  || undefined,
             tipoGestion:               v.tipoGestion,
-            prioridad:                 v.prioridad      || undefined,
-            fechaLimite:               v.fechaLimite,
-            estadoGestion:             v.estadoGestion  || undefined,
-            decision:                  v.decision.trim(),
-            fundamentoDecision:        v.fundamentoDecision.trim(),
-            fechaResolucion:           v.fechaResolucion,
-            observaciones:             v.observaciones.trim(),
+            prioridad:                 v.prioridad       || undefined,
+            fechaLimite:               v.fechaLimite     || null,
+            estadoGestion:             v.estadoGestion   || undefined,
+            decision:                  v.decision?.trim()           || null,
+            fundamentoDecision:        v.fundamentoDecision?.trim() || null,
+            fechaResolucion:           v.fechaResolucion            || null,
+            observaciones:             v.observaciones?.trim()      || null,
         };
 
         this.cargando = true;
@@ -364,11 +417,11 @@ export class GestionTramiteComponent implements OnInit {
 
         op$.subscribe({
             next: (r: GestionTramite) => {
-                this.cargando = false;
-                this.mensaje  = this.editandoId !== null
+                this.cargando  = false;
+                this.mensaje   = this.editandoId !== null
                     ? `Gestión #${r.idGestion} actualizada correctamente.`
                     : `Gestión #${r.idGestion} registrada correctamente.`;
-                this.vista     = 'listado';
+                this.vista      = 'listado';
                 this.editandoId = null;
                 this.cargar();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -421,16 +474,24 @@ export class GestionTramiteComponent implements OnInit {
 
     private resetForm(): void {
         this.form.reset({
-            idSolicitante: null,
-            nombresResponsable: '', apellidoPaternoResponsable: '', apellidoMaternoResponsable: '',
-            idAreaResponsable: null,
-            fechaRecepcion: '', tipoGestion: '', prioridad: 'NORMAL',
-            fechaLimite: '', estadoGestion: 'PENDIENTE',
-            decision: '', fundamentoDecision: '', fechaResolucion: '', observaciones: '',
+            idSolicitante:             null,
+            nombresResponsable:        '',
+            apellidoPaternoResponsable:'',
+            apellidoMaternoResponsable:'',
+            idAreaResponsable:         null,
+            fechaRecepcion:            '',
+            tipoGestion:               '',
+            prioridad:                 'NORMAL',
+            fechaLimite:               '',
+            estadoGestion:             'PENDIENTE',
+            decision:                  '',
+            fundamentoDecision:        '',
+            fechaResolucion:           '',
+            observaciones:             '',
         });
     }
 
-    // ── Compat legado (evita errores en el HTML si todavía se llama) ──────────
+    // ── Compat legado ─────────────────────────────────────────────────────────
     toggleEliminados(): void { /* no-op */ }
 
     logout(): void { this.auth.logout(); this.router.navigateByUrl('/admin/login'); }
