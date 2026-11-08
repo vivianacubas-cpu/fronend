@@ -1,1 +1,0 @@
-No se incluyen escudos ni fotografías oficiales porque no se adjuntaron recursos verificables. Coloca aquí solo recursos autorizados por la institución.
