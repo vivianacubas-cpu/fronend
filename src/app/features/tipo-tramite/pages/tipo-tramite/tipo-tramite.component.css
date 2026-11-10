@@ -1,0 +1,194 @@
+/* ═══════════════════════════════════════════════════════════════
+   TIPOS DE TRAMITE — Panel administrativo
+   El sidebar lo provee AdminLayoutComponent (admin-layout)
+═══════════════════════════════════════════════════════════════ */
+
+.tt-content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 28px 48px;
+  background: #f4f5f7;
+}
+
+/* ── Breadcrumb ── */
+.tt-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 0.80rem;
+  color: #999;
+}
+.tt-breadcrumb a { color: #999; text-decoration: none; transition: color .15s; }
+.tt-breadcrumb a:hover { color: #760018; }
+.tt-breadcrumb span { color: #ccc; }
+.tt-breadcrumb--active { color: #760018 !important; font-weight: 700; }
+
+/* ── Título ── */
+.tt-page-title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #760018;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.tt-page-underline { width: 44px; height: 4px; border-radius: 3px; background: #760018; margin-bottom: 10px; }
+.tt-page-desc { margin: 0 0 20px; font-size: 0.85rem; color: #888; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL
+═══════════════════════════════════════════════════════════════ */
+.tt-panel {
+  background: #fff;
+  border: 1px solid #e8e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(73,0,15,.05);
+}
+.tt-panel__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0e8e8;
+  background: #fffdf8;
+  flex-wrap: wrap;
+}
+.tt-panel__head-left { display: flex; align-items: center; gap: 12px; }
+.tt-panel__head-ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: #fce8e0; flex-shrink: 0; }
+.tt-panel__title { margin: 0 0 2px; font-size: 0.96rem; font-weight: 800; color: #760018; }
+.tt-panel__desc { margin: 0; font-size: 0.79rem; color: #999; }
+.tt-panel__head-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+/* ── Botones ── */
+.tt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .13s, box-shadow .13s;
+  text-decoration: none;
+}
+.tt-btn:disabled { opacity: .5; cursor: not-allowed; }
+.tt-btn--primary { background: #760018; color: #fff; border-color: #760018; box-shadow: 0 3px 10px rgba(118,0,24,.22); }
+.tt-btn--primary:hover { background: #5a0012; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(118,0,24,.28); }
+.tt-btn--outline { background: #fff; color: #760018; border-color: #c8b0b4; }
+.tt-btn--outline:hover { background: #fff5f5; border-color: #760018; }
+
+/* ── Filtro buscar ── */
+.tt-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 14px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0e8e8;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.tt-filter-group { display: flex; flex-direction: column; gap: 5px; }
+.tt-filter-label { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #666; }
+.tt-filters input {
+  height: 38px;
+  padding: 0 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  background: #fff;
+  color: #333;
+  min-width: 220px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.tt-filters input:focus { outline: none; border-color: #760018; box-shadow: 0 0 0 3px rgba(118,0,24,.08); }
+.tt-filters input::placeholder { color: #bbb; }
+.tt-search-wrap { position: relative; display: flex; align-items: center; }
+.tt-search-ico { position: absolute; left: 10px; color: #bbb; pointer-events: none; }
+.tt-search-wrap input { padding-left: 34px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLA
+═══════════════════════════════════════════════════════════════ */
+.tt-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd #f8f0f0;
+}
+.tt-table-wrap::-webkit-scrollbar { height: 5px; }
+.tt-table-wrap::-webkit-scrollbar-track { background: #f8f0f0; }
+.tt-table-wrap::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+.tt-table {
+  width: 100%;
+  min-width: 1400px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.83rem;
+  table-layout: auto;
+}
+.tt-table thead th {
+  padding: 10px 12px;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  color: #760018;
+  background: #fdf8f8;
+  border-bottom: 2px solid #f0e0e0;
+  white-space: nowrap;
+  text-align: left;
+}
+.tt-table tbody td {
+  padding: 11px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f5f0f0;
+  color: #333;
+  font-size: 0.83rem;
+}
+.tt-table tbody tr { transition: background .12s; }
+.tt-table tbody tr:hover { background: #fdf8f8; }
+.tt-table tbody tr:last-child td { border-bottom: none; }
+
+.tt-td-code { font-weight: 700; color: #760018; font-size: 0.82rem; }
+.tt-td-cat { white-space: nowrap; font-size: 0.78rem; color: #555; font-weight: 600; }
+.tt-td-date { white-space: nowrap; color: #666; font-size: 0.80rem; }
+.tt-td-center { text-align: center; }
+.tt-td-truncate { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #555; }
+.tt-empty { text-align: center; color: #aaa; padding: 40px 20px; font-style: italic; font-size: 0.9rem; }
+
+.tt-estado-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 6px; font-size: 0.70rem; font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
+.tt-estado--activo  { background: #fff4d6; color: #7a5600; border: 1.5px solid #f0d58a; }
+.tt-estado--inactivo { background: #fde2e2; color: #a4161a; border: 1.5px solid #f4b3b3; }
+
+.tt-row-actions { display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; }
+.tt-ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid transparent; cursor: pointer; background: transparent; transition: transform .12s; flex-shrink: 0; }
+.tt-ico:hover { transform: scale(1.14); }
+.tt-ico--view { background: #e8f0fe; color: #1a50c0; border-color: #bcd0f8; }
+.tt-ico--edit { background: #fff5d8; color: #9a6600; border-color: #f0d870; }
+.tt-ico--del  { background: #fde8e8; color: #b01818; border-color: #f0a8a8; }
+.tt-ico--rst  { background: #e5f8ec; color: #135e2e; border-color: #94dbb8; }
+
+.tt-form-body { padding: 24px 28px 28px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .tt-content { padding: 16px 14px 40px; }
+}
+
+@media (max-width: 600px) {
+  .tt-filters { justify-content: stretch; }
+  .tt-filters input { min-width: 100%; width: 100%; }
+  .tt-btn { width: 100%; justify-content: center; }
+  .tt-panel__head { flex-direction: column; align-items: flex-start; }
+}
