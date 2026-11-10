@@ -1,0 +1,633 @@
+<!-- PANEL ADMINISTRATIVO — GESTION DE TRAMITE FUT -->
+<div class="gt-content">
+
+    <!-- ══════════════════════════════════════════════════════
+         VISTA: DETALLE
+    ══════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'detalle' && detalle">
+
+      <nav class="gt-breadcrumb">
+        <a routerLink="/">Inicio</a><span>›</span>
+        <a routerLink="/admin/tramites">Acceso administrativo</a><span>›</span>
+        <a href="javascript:void(0)" (click)="volverAlListado()">Gestion de Tramite FUT</a><span>›</span>
+        <span class="gt-breadcrumb--active">Detalle #{{ detalle.idGestion }}</span>
+      </nav>
+
+      <h1 class="gt-page-title">Detalle de gestion #{{ detalle.idGestion }}</h1>
+      <div class="gt-page-underline"></div>
+      <p class="gt-page-desc">Consulta en modo solo lectura. Usa el lapiz en la tabla para editar.</p>
+
+      <section class="gt-panel">
+        <div class="gt-panel__head">
+          <div class="gt-panel__head-left">
+            <div class="gt-panel__head-ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#760018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <p class="gt-panel__title">Informacion de la gestion</p>
+              <p class="gt-panel__desc">Datos completos del registro #{{ detalle.idGestion }}</p>
+            </div>
+          </div>
+          <div class="gt-panel__head-actions">
+            <button class="gt-btn gt-btn--outline" type="button" (click)="volverAlListado()">← Volver</button>
+          </div>
+        </div>
+
+        <div class="gt-detalle-body">
+          <dl class="gt-detalle-grid">
+            <div><dt>ID Gestion</dt>          <dd>{{ detalle.idGestion }}</dd></div>
+            <div><dt>N. Documento</dt>        <dd>{{ detalle.numeroDocumento ?? '—' }}</dd></div>
+            <div><dt>Apellido paterno</dt>    <dd>{{ detalle.apellidoPaterno ?? '—' }}</dd></div>
+            <div><dt>Apellido materno</dt>    <dd>{{ detalle.apellidoMaterno ?? '—' }}</dd></div>
+            <div><dt>Nombres solicitante</dt> <dd>{{ detalle.nombres ?? '—' }}</dd></div>
+            <div><dt>Responsable</dt>         <dd>{{ detalle.responsable || nombreResponsable(detalle) }}</dd></div>
+            <div><dt>Area responsable</dt>    <dd>{{ detalle.areaResponsable ?? nombreArea(detalle.idAreaResponsable) }}</dd></div>
+            <div><dt>Fecha recepcion</dt>     <dd>{{ detalle.fechaRecepcion ? (detalle.fechaRecepcion | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>Tipo de gestion</dt>     <dd>{{ labelTipo(detalle.tipoGestion) }}</dd></div>
+            <div><dt>Prioridad</dt>
+              <dd>
+                <span class="gt-prioridad-badge gt-prioridad-{{ (detalle.prioridad ?? 'NORMAL').toLowerCase() }}">
+                  {{ labelPrioridad(detalle.prioridad ?? '') }}
+                </span>
+              </dd>
+            </div>
+            <div><dt>Fecha limite</dt>        <dd>{{ detalle.fechaLimite ? (detalle.fechaLimite | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>Estado gestion</dt>
+              <dd>
+                <span class="gt-estado-badge" [ngClass]="cssEstado(detalle.estadoGestion)">
+                  <span class="gt-estado-dot"></span>
+                  {{ detalle.estado ?? labelEstado(detalle.estadoGestion ?? '') }}
+                </span>
+              </dd>
+            </div>
+            <div><dt>Decision</dt>            <dd>{{ detalle.decision ?? '—' }}</dd></div>
+            <div class="full"><dt>Fundamento decision</dt> <dd>{{ detalle.fundamentoDecision ?? '—' }}</dd></div>
+            <div class="full"><dt>Observaciones</dt>       <dd>{{ detalle.observaciones ?? '—' }}</dd></div>
+            <div><dt>Fecha resolucion</dt>    <dd>{{ detalle.fechaResolucion ? (detalle.fechaResolucion | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>F. Registro</dt>         <dd>{{ detalle.fechaRegistro      ? (detalle.fechaRegistro      | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>F. Actualizacion</dt>    <dd>{{ detalle.fechaActualizacion ? (detalle.fechaActualizacion | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>F. Eliminacion</dt>      <dd>{{ detalle.fechaEliminacion   ? (detalle.fechaEliminacion   | date:'dd/MM/yyyy') : '—' }}</dd></div>
+            <div><dt>F. Restauracion</dt>     <dd>{{ detalle.fechaRestauracion  ? (detalle.fechaRestauracion  | date:'dd/MM/yyyy') : '—' }}</dd></div>
+          </dl>
+          <div class="gt-panel__foot-actions">
+            <button class="gt-btn gt-btn--outline" type="button" (click)="volverAlListado()">← Volver</button>
+          </div>
+        </div>
+      </section>
+
+    </ng-container>
+
+    <!-- ══════════════════════════════════════════════════════
+         VISTA: FORMULARIO (NUEVO / EDITAR)
+    ══════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'formulario'">
+
+      <nav class="gt-breadcrumb">
+        <a routerLink="/">Inicio</a><span>›</span>
+        <a routerLink="/admin/tramites">Acceso administrativo</a><span>›</span>
+        <a href="javascript:void(0)" (click)="volverAlListado()">Gestion de Tramite FUT</a><span>›</span>
+        <span class="gt-breadcrumb--active">{{ editandoId === null ? 'Nueva gestion' : 'Editar #' + editandoId }}</span>
+      </nav>
+
+      <h1 class="gt-page-title">{{ editandoId === null ? 'Registrar gestion de tramite FUT' : 'Editar gestion #' + editandoId }}</h1>
+      <div class="gt-page-underline"></div>
+      <p class="gt-page-desc">{{ editandoId === null ? 'Completa los campos para registrar una nueva gestion interna.' : 'Modifica los datos de la gestion seleccionada.' }}</p>
+
+      <section class="gt-panel">
+        <div class="gt-panel__head">
+          <div class="gt-panel__head-left">
+            <div class="gt-panel__head-ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#760018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <p class="gt-panel__title">{{ editandoId === null ? 'Nueva gestion' : 'Editar gestion #' + editandoId }}</p>
+              <p class="gt-panel__desc">Los datos se guardan en SQL Server a traves del backend Spring Boot.</p>
+            </div>
+          </div>
+          <div class="gt-panel__head-actions">
+            <button class="gt-btn gt-btn--outline" type="button" (click)="volverAlListado()">← Volver</button>
+          </div>
+        </div>
+
+        <div class="gt-form-body">
+          <div *ngIf="mensaje" class="notice" role="status">{{ mensaje }}</div>
+          <div *ngIf="error"   class="notice error-box" role="alert">{{ error }}</div>
+
+          <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+
+            <!-- Solicitante -->
+            <div class="form-grid">
+              <div class="field full">
+                <label for="gt-idSolicitante">Solicitante <span>*</span></label>
+                <div class="solicitud-selector" (keydown.escape)="cerrarMenuSolicitudes()">
+                  <button id="gt-idSolicitante" class="solicitud-select-trigger" type="button"
+                          [class.invalid]="invalido('idSolicitante')"
+                          [attr.aria-invalid]="invalido('idSolicitante')"
+                          aria-haspopup="listbox"
+                          aria-controls="gt-solicitante-options"
+                          [attr.aria-expanded]="solicitudMenuAbierto"
+                          [disabled]="cargandoSolicitudes || solicitantesActivos.length === 0"
+                          (click)="alternarMenuSolicitantes()">
+                    <span *ngIf="solicitanteSeleccionado as sel; else solicitantePlaceholder">
+                      {{ sel.numeroDocumento }} · {{ solicitanteNombre(sel) }}
+                    </span>
+                    <ng-template #solicitantePlaceholder>
+                      {{ cargandoSolicitudes ? '[Cargando solicitantes...]' : '[Seleccionar solicitante]' }}
+                    </ng-template>
+                    <span class="solicitud-select-arrow" aria-hidden="true">▾</span>
+                  </button>
+                  <div *ngIf="solicitudMenuAbierto" id="gt-solicitante-options"
+                       class="solicitud-options" role="listbox" aria-label="Solicitantes registrados activos">
+                    <button *ngFor="let s of solicitantesActivos"
+                            class="solicitud-option" type="button" role="option"
+                            [attr.aria-selected]="form.controls.idSolicitante.value === s.idSolicitante"
+                            [class.is-selected]="form.controls.idSolicitante.value === s.idSolicitante"
+                            (click)="seleccionarSolicitante(s.idSolicitante)">
+                      <span class="solicitud-option-title">{{ s.numeroDocumento }} · {{ solicitanteNombre(s) }}</span>
+                    </button>
+                  </div>
+                </div>
+                <span class="error" *ngIf="invalido('idSolicitante')">Selecciona un solicitante registrado.</span>
+                <span class="hint" *ngIf="!cargandoSolicitudes && solicitantesActivos.length === 0">
+                  No hay solicitantes activos registrados para asociar.
+                </span>
+              </div>
+            </div>
+
+            <!-- Responsable -->
+            <div class="form-grid">
+              <div class="field">
+                <label for="gt-nombres-responsable">Nombres del responsable <span>*</span></label>
+                <input id="gt-nombres-responsable" formControlName="nombresResponsable" maxlength="100"
+                       placeholder="Ej: Maria Elena" autocomplete="off" />
+                <span class="error" *ngIf="invalido('nombresResponsable')">
+                  Obligatorio. Solo letras y espacios; maximo 100 caracteres.
+                </span>
+              </div>
+              <div class="field">
+                <label for="gt-apellido-paterno">Apellido paterno del responsable <span>*</span></label>
+                <input id="gt-apellido-paterno" formControlName="apellidoPaternoResponsable" maxlength="100"
+                       placeholder="Ej: Lopez" autocomplete="off" />
+                <span class="error" *ngIf="invalido('apellidoPaternoResponsable')">
+                  Obligatorio; maximo 100 caracteres.
+                </span>
+              </div>
+              <div class="field">
+                <label for="gt-apellido-materno">Apellido materno del responsable <span>*</span></label>
+                <input id="gt-apellido-materno" formControlName="apellidoMaternoResponsable" maxlength="100"
+                       placeholder="Ej: Garcia" autocomplete="off" />
+                <span class="error" *ngIf="invalido('apellidoMaternoResponsable')">
+                  Obligatorio; maximo 100 caracteres.
+                </span>
+              </div>
+              <div class="field">
+                <label for="gt-area">Area responsable <span>*</span></label>
+                <select id="gt-area" formControlName="idAreaResponsable">
+                  <option [ngValue]="null">[Seleccionar area]</option>
+                  <option *ngFor="let a of areas" [ngValue]="a.idArea">{{ a.nombre }}</option>
+                </select>
+                <span class="error" *ngIf="invalido('idAreaResponsable')">Selecciona un area responsable.</span>
+                <span *ngIf="cargandoAreas" class="hint">Cargando areas...</span>
+                <span *ngIf="!cargandoAreas && areas.length === 0" class="hint">No hay areas registradas.</span>
+              </div>
+            </div>
+
+            <!-- Tipo, prioridad, estado -->
+            <div class="form-grid">
+              <div class="field">
+                <label for="gt-tipo">Tipo de gestion <span>*</span></label>
+                <select id="gt-tipo" formControlName="tipoGestion">
+                  <option value="">[Seleccionar tipo]</option>
+                  <option *ngFor="let t of tiposGestion" [value]="t.value">{{ t.label }}</option>
+                </select>
+                <span class="error" *ngIf="invalido('tipoGestion')">Selecciona el tipo de gestion.</span>
+              </div>
+              <div class="field">
+                <label for="gt-prioridad">Prioridad <span>*</span></label>
+                <select id="gt-prioridad" formControlName="prioridad">
+                  <option *ngFor="let p of prioridades" [value]="p.value">{{ p.label }}</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="gt-estado">Estado de gestion <span>*</span></label>
+                <select id="gt-estado" formControlName="estadoGestion">
+                  <option *ngFor="let e of estadosGestion" [value]="e.value">{{ e.label }}</option>
+                </select>
+                <span class="hint" *ngIf="!requiereResolucion">
+                  En estado Pendiente o En proceso, decision y resolucion son opcionales.
+                </span>
+              </div>
+            </div>
+
+            <!-- Fechas -->
+            <div class="form-grid">
+              <div class="field">
+                <label for="gt-fechaRec">Fecha de recepcion <span>*</span></label>
+                <input id="gt-fechaRec" type="date" formControlName="fechaRecepcion"
+                       [min]="editandoId === null ? fechaMinima : ''"
+                       [max]="fechaMaximaMes" />
+                <span class="error" *ngIf="invalido('fechaRecepcion')">La fecha de recepcion es obligatoria.</span>
+              </div>
+              <div class="field">
+                <label for="gt-fechaLim">Fecha limite <span>*</span></label>
+                <input id="gt-fechaLim" type="date" formControlName="fechaLimite"
+                       [min]="editandoId === null ? fechaMinima : ''"
+                       [max]="fechaMaximaMes" />
+                <span class="error" *ngIf="invalido('fechaLimite')">La fecha limite es obligatoria.</span>
+              </div>
+              <div class="field">
+                <label for="gt-fechaRes">
+                  Fecha de resolucion
+                  <span *ngIf="requiereResolucion">*</span>
+                </label>
+                <input id="gt-fechaRes" type="date" formControlName="fechaResolucion"
+                       [min]="editandoId === null ? fechaMinima : ''"
+                       [max]="fechaMaximaMes" />
+                <span class="error" *ngIf="invalido('fechaResolucion')">La fecha de resolucion es obligatoria para este estado.</span>
+              </div>
+            </div>
+
+            <!-- Decisión -->
+            <div class="form-grid">
+              <div class="field full">
+                <label for="gt-decision">
+                  Decision
+                  <span *ngIf="requiereResolucion">*</span>
+                </label>
+                <input id="gt-decision" formControlName="decision" maxlength="500"
+                       placeholder="Decision adoptada, si corresponde" />
+                <span class="error" *ngIf="invalido('decision')">La decision es obligatoria para este estado.</span>
+              </div>
+            </div>
+
+            <!-- Fundamento -->
+            <div class="form-grid">
+              <div class="field full">
+                <label for="gt-fundamento">
+                  Fundamento de la decision
+                  <span *ngIf="requiereResolucion">*</span>
+                </label>
+                <textarea id="gt-fundamento" formControlName="fundamentoDecision" maxlength="2000" rows="3"
+                          placeholder="Justificacion de la decision adoptada, si corresponde"></textarea>
+                <span class="error" *ngIf="invalido('fundamentoDecision')">El fundamento es obligatorio para este estado.</span>
+                <div class="field-meta">
+                  <span></span>
+                  <small>{{ (form.controls.fundamentoDecision.value || '').length }}/2000</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="form-grid">
+              <div class="field full">
+                <label for="gt-obs">Observaciones <span>*</span></label>
+                <textarea id="gt-obs" formControlName="observaciones" maxlength="2000" rows="3"
+                          placeholder="Observaciones adicionales sobre el tramite"></textarea>
+                <span class="error" *ngIf="invalido('observaciones')">Las observaciones son obligatorias.</span>
+                <div class="field-meta">
+                  <span></span>
+                  <small>{{ (form.controls.observaciones.value || '').length }}/2000</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="notice" style="margin-top:8px; font-size:.88rem;">
+              <strong>Campos automaticos</strong> gestionados por el backend:
+              <strong>fecha_registro</strong> · <strong>fecha_actualizacion</strong> ·
+              <strong>fecha_eliminacion</strong> · <strong>fecha_restauracion</strong>.
+            </div>
+
+            <div class="actions">
+              <button class="gt-btn gt-btn--primary" type="submit" [disabled]="cargando">
+                {{ cargando ? 'Guardando...' : (editandoId === null ? 'Guardar' : 'Actualizar') }}
+              </button>
+              <button class="gt-btn gt-btn--outline" type="button" (click)="cancelar()" [disabled]="cargando">
+                Cancelar
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+    </ng-container>
+
+    <!-- ══════════════════════════════════════════════════════
+         VISTA: LISTADO (GESTIONES ACTIVAS)
+    ══════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'listado'">
+
+      <nav class="gt-breadcrumb">
+        <a routerLink="/">Inicio</a><span>›</span>
+        <a routerLink="/admin/tramites">Acceso administrativo</a><span>›</span>
+        <span class="gt-breadcrumb--active">Gestion de Tramite FUT</span>
+      </nav>
+
+      <h1 class="gt-page-title">Gestion de Tramite FUT</h1>
+      <div class="gt-page-underline"></div>
+      <p class="gt-page-desc">Registro y seguimiento interno del procesamiento de los tramites.</p>
+
+      <div *ngIf="mensaje" class="notice" role="status">{{ mensaje }}</div>
+      <div *ngIf="error"   class="notice error-box" role="alert">{{ error }}</div>
+
+      <section class="gt-panel">
+
+        <div class="gt-panel__head">
+          <div class="gt-panel__head-left">
+            <div class="gt-panel__head-ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#760018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <p class="gt-panel__title">Gestiones activas</p>
+              <p class="gt-panel__desc">Registros activos. Usa los iconos para ver, editar o eliminar.</p>
+            </div>
+          </div>
+          <div class="gt-panel__head-actions">
+            <button class="gt-btn gt-btn--primary" type="button" (click)="nuevo()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Nueva gestion
+            </button>
+            <button class="gt-btn gt-btn--outline" type="button" (click)="verEliminados()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
+              Eliminadas
+            </button>
+            <button class="gt-btn gt-btn--outline" type="button" (click)="cargar()" [disabled]="cargando">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+              </svg>
+              {{ cargando ? '...' : 'Actualizar' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="gt-filters">
+          <div class="gt-filter-group">
+            <label class="gt-filter-label">Buscar</label>
+            <div class="gt-search-wrap">
+              <svg class="gt-search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input [(ngModel)]="query" (ngModelChange)="aplicarFiltro()"
+                     placeholder="ID, documento, responsable, area, tipo, estado..." />
+            </div>
+          </div>
+          <div class="gt-filter-group">
+            <label class="gt-filter-label">Estado gestion</label>
+            <select [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltro()">
+              <option value="">Todos</option>
+              <option *ngFor="let e of estadosGestion" [value]="e.value">{{ e.label }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="gt-table-wrap">
+          <table class="gt-table">
+            <thead>
+              <tr>
+                <th class="gt-th-num">N.</th>
+                <th>N. DOCUMENTO</th>
+                <th>APELLIDO PATERNO</th>
+                <th>APELLIDO MATERNO</th>
+                <th>NOMBRES</th>
+                <th>RESPONSABLE</th>
+                <th>AREA RESP.</th>
+                <th>TIPO GESTION</th>
+                <th>PRIORIDAD</th>
+                <th>ESTADO TRÁMITE</th>
+                <th>ESTADO REGISTRO</th>
+                <th>F. RECEPCION</th>
+                <th>F. LIMITE</th>
+                <th>F. RESOLUCION</th>
+                <th>DECISION</th>
+                <th>FUNDAMENTO DECISION</th>
+                <th>OBSERVACIONES</th>
+                <th>F. REGISTRO</th>
+                <th>F. ACTUALIZ.</th>
+                <th>F. ELIMINAC.</th>
+                <th>F. RESTAURACION</th>
+                <th>ACC.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of filtered; let i = index">
+                <td class="gt-td-num">{{ r.numero ?? (i + 1) }}</td>
+                <td><strong>{{ r.numeroDocumento ?? '—' }}</strong></td>
+                <td>{{ r.apellidoPaterno ?? '—' }}</td>
+                <td>{{ r.apellidoMaterno ?? '—' }}</td>
+                <td>{{ r.nombres ?? '—' }}</td>
+                <td>{{ r.responsable || nombreResponsable(r) }}</td>
+                <td>{{ r.areaResponsable ?? nombreArea(r.idAreaResponsable) }}</td>
+                <td>{{ labelTipo(r.tipoGestion) }}</td>
+                <td>
+                  <span class="gt-prioridad-badge gt-prioridad-{{ (r.prioridad ?? 'NORMAL').toLowerCase() }}">
+                    {{ labelPrioridad(r.prioridad ?? 'NORMAL') }}
+                  </span>
+                </td>
+                <td>
+                  <span class="gt-estado-badge" [ngClass]="cssEstado(r.estadoGestion)">
+                    <span class="gt-estado-dot"></span>
+                    {{ r.estado ?? labelEstado(r.estadoGestion ?? '') }}
+                  </span>
+                </td>
+                <td>
+                  <span class="gt-registro-activo">
+                    <span class="gt-registro-dot"></span>
+                    Activo
+                  </span>
+                </td>
+                <td class="gt-td-date">{{ r.fechaRecepcion    ? (r.fechaRecepcion    | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaLimite        ? (r.fechaLimite        | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaResolucion    ? (r.fechaResolucion    | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.decision ?? ''">{{ r.decision ?? '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.fundamentoDecision ?? ''">{{ r.fundamentoDecision ?? '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.observaciones ?? ''">{{ r.observaciones ?? '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaRegistro      ? (r.fechaRegistro      | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaActualizacion ? (r.fechaActualizacion | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaEliminacion   ? (r.fechaEliminacion   | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaRestauracion  ? (r.fechaRestauracion  | date:'dd/MM/yy') : '—' }}</td>
+                <td>
+                  <div class="gt-row-actions">
+                    <button class="gt-ico gt-ico--view" type="button" (click)="ver(r)" title="Ver detalles">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                    <button class="gt-ico gt-ico--edit" type="button" (click)="editar(r)" title="Editar gestion">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                    </button>
+                    <button class="gt-ico gt-ico--del" type="button" (click)="eliminar(r)" title="Eliminar gestion">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/>
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!filtered.length">
+                <td colspan="22" class="gt-empty">
+                  {{ cargando ? 'Cargando gestiones...' : 'No hay gestiones activas. Pulsa + Nueva gestion para registrar una.' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </ng-container>
+
+    <!-- ══════════════════════════════════════════════════════
+         VISTA: GESTIONES ELIMINADAS
+    ══════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'eliminados'">
+
+      <nav class="gt-breadcrumb">
+        <a routerLink="/">Inicio</a><span>›</span>
+        <a routerLink="/admin/tramites">Acceso administrativo</a><span>›</span>
+        <a href="javascript:void(0)" (click)="volverAlListado()">Gestion de Tramite FUT</a><span>›</span>
+        <span class="gt-breadcrumb--active">Eliminadas</span>
+      </nav>
+
+      <h1 class="gt-page-title">Gestiones eliminadas</h1>
+      <div class="gt-page-underline"></div>
+      <p class="gt-page-desc">Registros con baja logica. Usa Restaurar para reactivar una gestion.</p>
+
+      <div *ngIf="mensaje" class="notice" role="status">{{ mensaje }}</div>
+      <div *ngIf="error"   class="notice error-box" role="alert">{{ error }}</div>
+
+      <section class="gt-panel">
+        <div class="gt-panel__head">
+          <div class="gt-panel__head-left">
+            <div class="gt-panel__head-ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#760018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
+            </div>
+            <div>
+              <p class="gt-panel__title">Gestiones eliminadas</p>
+              <p class="gt-panel__desc">{{ eliminados.length }} registro{{ eliminados.length !== 1 ? 's' : '' }} eliminado{{ eliminados.length !== 1 ? 's' : '' }}.</p>
+            </div>
+          </div>
+          <div class="gt-panel__head-actions">
+            <button class="gt-btn gt-btn--outline" type="button" (click)="volverAlListado()">← Volver a gestiones</button>
+            <button class="gt-btn gt-btn--outline" type="button" (click)="verEliminados()" [disabled]="cargando">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+              </svg>
+              {{ cargando ? '...' : 'Actualizar' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="gt-table-wrap">
+          <table class="gt-table">
+            <thead>
+              <tr>
+                <th class="gt-th-num">N.</th>
+                <th>N. DOCUMENTO</th>
+                <th>APELLIDO PATERNO</th>
+                <th>APELLIDO MATERNO</th>
+                <th>NOMBRES</th>
+                <th>RESPONSABLE</th>
+                <th>AREA RESP.</th>
+                <th>TIPO GESTION</th>
+                <th>PRIORIDAD</th>
+                <th>ESTADO TRÁMITE</th>
+                <th>ESTADO REGISTRO</th>
+                <th>F. RECEPCION</th>
+                <th>F. LIMITE</th>
+                <th>F. RESOLUCION</th>
+                <th>DECISION</th>
+                <th>FUNDAMENTO DECISION</th>
+                <th>OBSERVACIONES</th>
+                <th>F. REGISTRO</th>
+                <th>F. ACTUALIZ.</th>
+                <th>F. ELIMINAC.</th>
+                <th>F. RESTAURACION</th>
+                <th>ACC.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of eliminados; let i = index">
+                <td class="gt-td-num">{{ r.numero ?? (i + 1) }}</td>
+                <td><strong>{{ r.numeroDocumento ?? '—' }}</strong></td>
+                <td>{{ r.apellidoPaterno ?? '—' }}</td>
+                <td>{{ r.apellidoMaterno ?? '—' }}</td>
+                <td>{{ r.nombres ?? '—' }}</td>
+                <td>{{ r.responsable || nombreResponsable(r) }}</td>
+                <td>{{ r.areaResponsable ?? nombreArea(r.idAreaResponsable) }}</td>
+                <td>{{ labelTipo(r.tipoGestion) }}</td>
+                <td>
+                  <span class="gt-prioridad-badge gt-prioridad-{{ (r.prioridad ?? 'NORMAL').toLowerCase() }}">
+                    {{ labelPrioridad(r.prioridad ?? 'NORMAL') }}
+                  </span>
+                </td>
+                <td>
+                  <span class="gt-estado-badge" [ngClass]="cssEstado(r.estadoGestion)">
+                    <span class="gt-estado-dot"></span>
+                    {{ r.estado ?? labelEstado(r.estadoGestion ?? '') }}
+                  </span>
+                </td>
+                <td>
+                  <span class="gt-registro-inactivo">
+                    <span class="gt-registro-dot"></span>
+                    Inactivo
+                  </span>
+                </td>
+                <td class="gt-td-date">{{ r.fechaRecepcion    ? (r.fechaRecepcion    | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaLimite        ? (r.fechaLimite        | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaResolucion    ? (r.fechaResolucion    | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.decision ?? ''">{{ r.decision ?? '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.fundamentoDecision ?? ''">{{ r.fundamentoDecision ?? '—' }}</td>
+                <td class="gt-td-truncate" [title]="r.observaciones ?? ''">{{ r.observaciones ?? '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaRegistro      ? (r.fechaRegistro      | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaActualizacion ? (r.fechaActualizacion | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaEliminacion   ? (r.fechaEliminacion   | date:'dd/MM/yy') : '—' }}</td>
+                <td class="gt-td-date">{{ r.fechaRestauracion  ? (r.fechaRestauracion  | date:'dd/MM/yy') : '—' }}</td>
+                <td>
+                  <div class="gt-row-actions">
+                    <button class="gt-ico gt-ico--view" type="button" (click)="ver(r)" title="Ver detalles">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                    <button class="gt-ico gt-ico--rst" type="button" (click)="restaurar(r)" title="Restaurar gestion">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!eliminados.length">
+                <td colspan="22" class="gt-empty">No hay gestiones eliminadas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </ng-container>
+
+</div>

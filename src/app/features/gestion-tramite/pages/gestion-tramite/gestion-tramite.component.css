@@ -1,0 +1,395 @@
+/* ═══════════════════════════════════════════════════════════════
+   GESTION DE TRAMITE FUT — Panel administrativo
+   El sidebar lo provee AdminLayoutComponent (admin-layout)
+═══════════════════════════════════════════════════════════════ */
+
+.gt-content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 28px 48px;
+  background: #f4f5f7;
+}
+
+/* ── Breadcrumb ── */
+.gt-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 0.80rem;
+  color: #999;
+}
+.gt-breadcrumb a { color: #999; text-decoration: none; transition: color .15s; }
+.gt-breadcrumb a:hover { color: #760018; }
+.gt-breadcrumb span { color: #ccc; }
+.gt-breadcrumb--active { color: #760018 !important; font-weight: 700; }
+
+/* ── Título ── */
+.gt-page-title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #760018;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.gt-page-underline { width: 44px; height: 4px; border-radius: 3px; background: #760018; margin-bottom: 10px; }
+.gt-page-desc { margin: 0 0 20px; font-size: 0.85rem; color: #888; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL PRINCIPAL
+═══════════════════════════════════════════════════════════════ */
+.gt-panel {
+  background: #fff;
+  border: 1px solid #e8e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(73,0,15,.05);
+}
+.gt-panel__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0e8e8;
+  background: #fffdf8;
+  flex-wrap: wrap;
+}
+.gt-panel__head-left { display: flex; align-items: center; gap: 12px; }
+.gt-panel__head-ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: #fce8e0; flex-shrink: 0; }
+.gt-panel__title { margin: 0 0 2px; font-size: 0.96rem; font-weight: 800; color: #760018; }
+.gt-panel__desc { margin: 0; font-size: 0.79rem; color: #999; }
+.gt-panel__head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.gt-panel__foot-actions { padding: 16px 20px; border-top: 1px solid #f0e8e8; display: flex; gap: 10px; }
+
+/* ── Botones ── */
+.gt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .13s, box-shadow .13s;
+  text-decoration: none;
+}
+.gt-btn:disabled { opacity: .5; cursor: not-allowed; }
+.gt-btn--primary { background: #760018; color: #fff; border-color: #760018; box-shadow: 0 3px 10px rgba(118,0,24,.22); }
+.gt-btn--primary:hover { background: #5a0012; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(118,0,24,.28); }
+.gt-btn--outline { background: #fff; color: #760018; border-color: #c8b0b4; }
+.gt-btn--outline:hover { background: #fff5f5; border-color: #760018; }
+
+/* ── Filtros ── */
+.gt-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 14px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0e8e8;
+  flex-wrap: wrap;
+}
+.gt-filter-group { display: flex; flex-direction: column; gap: 5px; }
+.gt-filter-label { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #666; }
+.gt-filters input,
+.gt-filters select {
+  height: 38px;
+  padding: 0 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  background: #fff;
+  color: #333;
+  transition: border-color .2s, box-shadow .2s;
+}
+.gt-filters input:focus,
+.gt-filters select:focus { outline: none; border-color: #760018; box-shadow: 0 0 0 3px rgba(118,0,24,.08); }
+.gt-filters input::placeholder { color: #bbb; }
+.gt-filters input  { min-width: 260px; }
+.gt-filters select { min-width: 180px; }
+.gt-search-wrap { position: relative; display: flex; align-items: center; }
+.gt-search-ico { position: absolute; left: 10px; color: #bbb; pointer-events: none; }
+.gt-search-wrap input { padding-left: 34px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLA
+═══════════════════════════════════════════════════════════════ */
+.gt-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd #f8f0f0;
+}
+.gt-table-wrap::-webkit-scrollbar { height: 5px; }
+.gt-table-wrap::-webkit-scrollbar-track { background: #f8f0f0; }
+.gt-table-wrap::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+.gt-table {
+  width: 100%;
+  min-width: 2450px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.83rem;
+  table-layout: auto;
+}
+.gt-table thead th {
+  padding: 10px 12px;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  color: #760018;
+  background: #fdf8f8;
+  border-bottom: 2px solid #f0e0e0;
+  white-space: nowrap;
+  text-align: left;
+}
+.gt-th-num { width: 36px; text-align: center; }
+.gt-table tbody td {
+  padding: 11px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f5f0f0;
+  color: #333;
+  font-size: 0.83rem;
+}
+.gt-table tbody tr { transition: background .12s; }
+.gt-table tbody tr:hover { background: #fdf8f8; }
+.gt-table tbody tr:last-child td { border-bottom: none; }
+.gt-td-num { text-align: center; color: #aaa; font-size: 0.78rem; }
+.gt-td-date { white-space: nowrap; color: #555; }
+.gt-td-truncate { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gt-empty { text-align: center; color: #aaa; padding: 40px 20px; font-style: italic; font-size: 0.9rem; }
+
+/* ── Badges de prioridad ── */
+.gt-prioridad-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 0.76rem; font-weight: 700; white-space: nowrap; }
+.gt-prioridad-normal      { background: #e8f4fd; color: #0f5c8a; border: 1px solid #b8d9f5; }
+.gt-prioridad-urgente     { background: #fff3e0; color: #b45309; border: 1px solid #ffcc80; }
+.gt-prioridad-muy_urgente { background: #fde8e8; color: #a4161a; border: 1px solid #f4b3b3; }
+
+/* ── Badges de estado ── */
+.gt-estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 6px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  border: 1.5px solid transparent;
+}
+.gt-estado-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.gt-estado-badge.st-received { background: #fff4d6; color: #7a5600; border-color: #f0d58a; }
+.gt-estado-badge.st-review   { background: #e3efff; color: #0f4c9a; border-color: #b7d3fb; }
+.gt-estado-badge.st-observed { background: #ffe9d6; color: #9a4a00; border-color: #f7c79b; }
+.gt-estado-badge.st-done     { background: #def6e5; color: #136b32; border-color: #a9e3bd; }
+.gt-estado-badge.st-rejected { background: #fde2e2; color: #a4161a; border-color: #f4b3b3; }
+
+/* ── Badges ACTIVO / INACTIVO (estado de registro) ── */
+.gt-registro-activo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 11px 3px 7px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  background: #edfbf1;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+}
+.gt-registro-inactivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 11px 3px 7px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  background: #fff0f0;
+  color: #b91c1c;
+  border: 1.5px solid #fca5a5;
+}
+.gt-registro-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── Botones de fila ── */
+.gt-row-actions { display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; }
+.gt-ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid transparent; cursor: pointer; background: transparent; text-decoration: none; transition: transform .12s; flex-shrink: 0; }
+.gt-ico:hover { transform: scale(1.14); }
+.gt-ico--view { background: #e8f0fe; color: #1a50c0; border-color: #bcd0f8; }
+.gt-ico--edit { background: #fff5d8; color: #9a6600; border-color: #f0d870; }
+.gt-ico--del  { background: #fde8e8; color: #b01818; border-color: #f0a8a8; }
+.gt-ico--rst  { background: #e5f8ec; color: #135e2e; border-color: #94dbb8; }
+
+/* ── Detalle y formulario ── */
+.gt-detalle-body,
+.gt-form-body { padding: 24px 28px 28px; }
+
+.gt-detalle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
+  margin: 0 0 20px;
+}
+.gt-detalle-grid > div { border-bottom: 1px solid #f0e8e8; padding-bottom: 8px; }
+.gt-detalle-grid > div.full { grid-column: 1 / -1; }
+.gt-detalle-grid dt { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #999; margin-bottom: 3px; }
+.gt-detalle-grid dd { margin: 0; font-size: 0.91rem; color: #1a0a0a; }
+
+/* Selector de solicitante */
+.solicitud-selector { width: 100%; }
+.solicitud-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #dfd0d3;
+  border-radius: 9px;
+  background: #fffefd;
+  color: var(--fut-text);
+  text-align: left;
+  cursor: pointer;
+}
+.solicitud-select-trigger:hover { border-color: #c9a5ab; }
+.solicitud-select-trigger:focus-visible { outline: 3px solid rgba(229,189,69,.25); border-color: var(--fut-burgundy); box-shadow: 0 0 0 1px var(--fut-burgundy); }
+.solicitud-select-trigger.invalid { border-color: var(--fut-red); }
+.solicitud-select-trigger:disabled { cursor: not-allowed; opacity: .7; }
+.solicitud-select-arrow { flex: 0 0 auto; }
+.solicitud-options { position: static; display: grid; max-height: 280px; margin-top: 6px; overflow-y: auto; border: 1px solid #dfd0d3; border-radius: 9px; background: #fffefd; box-shadow: 0 8px 18px rgba(50,20,25,.12); }
+.solicitud-option { display: grid; gap: 3px; width: 100%; padding: 10px 14px; border: 0; border-bottom: 1px solid #f0e8e8; background: transparent; color: var(--fut-text); text-align: left; cursor: pointer; }
+.solicitud-option:last-child { border-bottom: 0; }
+.solicitud-option:hover, .solicitud-option.is-selected { background: #fff7e5; }
+.solicitud-option:focus-visible { outline: 2px solid var(--fut-burgundy); outline-offset: -2px; }
+.solicitud-option-title { font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .gt-content { padding: 16px 14px 40px; }
+}
+
+@media (max-width: 600px) {
+  .gt-filters { flex-direction: column; align-items: stretch; }
+  .gt-filters input, .gt-filters select { min-width: 100%; width: 100%; }
+  .gt-btn { width: 100%; justify-content: center; }
+  .gt-panel__head { flex-direction: column; align-items: flex-start; }
+  .gt-detalle-grid { grid-template-columns: 1fr; }
+  .gt-detalle-grid > div.full { grid-column: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORMULARIO — campos, grids, validaciones
+═══════════════════════════════════════════════════════════════ */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px 24px;
+  margin-bottom: 20px;
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field.full { grid-column: 1 / -1; }
+
+.field label {
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.field label span { color: #760018; margin-left: 2px; }
+
+.field input,
+.field select,
+.field textarea {
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  background: #fff;
+  color: #222;
+  transition: border-color .2s, box-shadow .2s;
+  font-family: inherit;
+}
+.field textarea { height: auto; padding: 10px 12px; resize: vertical; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #760018;
+  box-shadow: 0 0 0 3px rgba(118,0,24,.08);
+}
+
+.field .error {
+  font-size: 0.78rem;
+  color: #c0001a;
+  font-weight: 600;
+}
+.field .hint {
+  font-size: 0.76rem;
+  color: #999;
+  font-style: italic;
+}
+.field-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+/* Mensajes de alerta */
+.notice {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  background: #e8f7ee;
+  color: #135e2e;
+  border: 1px solid #a9e3bd;
+  margin-bottom: 16px;
+}
+.notice.error-box,
+.error-box {
+  background: #fde8e8;
+  color: #a4161a;
+  border-color: #f4b3b3;
+}
+
+/* Botones del formulario */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f0e8e8;
+}
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field.full { grid-column: auto; }
+  .actions { flex-direction: column; }
+}
