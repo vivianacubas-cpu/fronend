@@ -1,0 +1,252 @@
+
+<div class="page">
+
+  <!-- ENCABEZADO -->
+  <header class="page-header">
+
+    <a
+      class="back-link"
+      routerLink="/admin/tramites"
+      aria-label="Volver a la gestión de trámites"
+    >
+      ← Volver a gestión de trámites
+    </a>
+
+    <span class="eyebrow">
+      Área privada · Administración
+    </span>
+
+    <h1>Resumen administrativo</h1>
+
+    <p>
+      Consulta las estadísticas y la información general
+      de los trámites FUT registrados en el sistema.
+    </p>
+
+  </header>
+
+  <!-- MENSAJE DE ERROR -->
+  <div
+    *ngIf="error"
+    class="notice error-box"
+    role="alert"
+    aria-live="assertive"
+  >
+    {{ error }}
+  </div>
+
+  <!-- ESTADÍSTICAS POR ESTADO -->
+  <section
+    class="stats-section"
+    aria-label="Estadísticas de trámites por estado"
+  >
+
+    <div class="stats-grid">
+
+      <article class="card stat-card">
+        <span class="eyebrow">Recibidos</span>
+        <strong>{{ count("RECIBIDO") }}</strong>
+        <small>Pendientes de revisión</small>
+      </article>
+
+      <article class="card stat-card">
+        <span class="eyebrow">En revisión</span>
+        <strong>{{ count("EN_REVISION") }}</strong>
+        <small>En proceso de atención</small>
+      </article>
+
+      <article class="card stat-card">
+        <span class="eyebrow">Observados</span>
+        <strong>{{ count("OBSERVADO") }}</strong>
+        <small>Requieren acción del solicitante</small>
+      </article>
+
+      <article class="card stat-card">
+        <span class="eyebrow">Atendidos</span>
+        <strong>{{ count("ATENDIDO") }}</strong>
+        <small>Trámites resueltos</small>
+      </article>
+
+      <article class="card stat-card">
+        <span class="eyebrow">Rechazados</span>
+        <strong>{{ count("NO_PROCEDE") }}</strong>
+        <small>No procedieron</small>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- DOCUMENTACIÓN DE API Y SCHEMAS -->
+  <section class="card api-section">
+
+    <div class="api-section__header">
+
+      <div>
+        <span class="eyebrow">Documentación técnica</span>
+
+        <h2>API y Schemas</h2>
+
+        <p>
+          Correspondencia entre las APIs REST del sistema
+          y sus schemas de datos. Consulta la documentación
+          completa mediante Swagger UI.
+        </p>
+      </div>
+
+      <a
+        class="swagger-link"
+        href="http://localhost:8085/swagger-ui.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Abrir Swagger UI en una nueva pestaña"
+      >
+        Swagger UI ↗
+      </a>
+
+    </div>
+
+    <!-- TABLA DE APIS -->
+    <div class="table-wrap">
+
+      <table>
+        <caption class="visually-hidden">
+          Relación de APIs, schemas, tipos y endpoints del sistema FUT.
+        </caption>
+
+        <thead>
+          <tr>
+            <th scope="col">API</th>
+            <th scope="col">Schema</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Endpoint base</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>
+              <strong>TramiteFUT API</strong>
+            </td>
+            <td>
+              <code>SolicitudRequest</code>
+            </td>
+            <td>
+              <span class="status-badge st-review">
+                Transaccional
+              </span>
+            </td>
+            <td>
+              <code>/v1/api/solicitud</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong>Solicitante API</strong>
+            </td>
+            <td>
+              <code>Solicitante</code>
+            </td>
+            <td>
+              <span class="status-badge st-received">
+                Maestra
+              </span>
+            </td>
+            <td>
+              <code>/v1/api/solicitante</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong>TipoTramite API</strong>
+            </td>
+            <td>
+              <code>TipoTramite</code>
+            </td>
+            <td>
+              <span class="status-badge st-received">
+                Maestra
+              </span>
+            </td>
+            <td>
+              <code>/v1/api/tipo-tramite</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong>Seguimiento de Trámite API</strong>
+            </td>
+            <td>
+              <code>SeguimientoTramite</code>
+            </td>
+            <td>
+              <span class="status-badge st-review">
+                Transaccional
+              </span>
+            </td>
+            <td>
+              <code>/v1/api/seguimiento</code>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- ACCESO A SWAGGER -->
+    <div class="api-section__footer">
+
+      <a
+        class="button secondary"
+        href="http://localhost:8085/swagger-ui.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ver documentación completa en Swagger UI ↗
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- ACCESOS ADMINISTRATIVOS -->
+  <nav
+    class="actions"
+    aria-label="Accesos administrativos"
+  >
+
+    <a
+      class="button secondary"
+      routerLink="/admin/tramites"
+    >
+      Ver solicitudes
+    </a>
+
+    <a
+      class="button secondary"
+      routerLink="/admin/solicitantes"
+    >
+      Solicitantes
+    </a>
+
+    <a
+      class="button secondary"
+      routerLink="/admin/tipo-tramite"
+    >
+      Tipos de trámite
+    </a>
+
+    <a
+      class="button secondary"
+      routerLink="/admin/usuarios"
+    >
+      Cuentas administrativas
+    </a>
+
+  </nav>
+
+</div>
