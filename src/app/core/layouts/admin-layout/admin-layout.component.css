@@ -1,0 +1,208 @@
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN LAYOUT — sidebar guinda + dorado
+   Paleta: guinda oscuro #3d0010 → #600014 | dorado #e9b91e
+           activo: fondo crema #fff9f0 | texto guinda #760018
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Contenedor principal ────────────────────────────────────── */
+.adm-shell {
+  display: flex;
+  min-height: calc(100vh - 95px - 64px);
+  background: #f4f5f7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════════ */
+.adm-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  background: linear-gradient(180deg, #3d0010 0%, #5a0014 55%, #600014 100%);
+  border-right: 3px solid #e9b91e;
+  padding: 28px 0 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 3px 0 18px rgba(0,0,0,.30);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea dorada vertical decorativa en el borde derecho */
+.adm-sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 100%;
+}
+
+/* ── Título "ÁREA ADMINISTRATIVA" ──────────────────────────── */
+.adm-sidebar__label {
+  margin: 0 0 20px;
+  padding: 0 24px 14px;
+  font-size: 0.70rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.75);
+  position: relative;
+}
+.adm-sidebar__label::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 24px;
+  width: 36px; height: 3px;
+  background: #e9b91e;
+  border-radius: 2px;
+}
+
+/* ── Nav ───────────────────────────────────────────────────── */
+.adm-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 14px;
+  flex: 1;
+}
+
+/* ── Divisor antes de "Cerrar sesión" ─────────────────────── */
+.adm-sidebar__divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,.12);
+  margin: 6px 0;
+}
+
+/* ── Botón / enlace de navegación base ────────────────────── */
+.adm-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.80);
+  text-decoration: none;
+  border: none;
+  border-left: 4px solid transparent;
+  background: rgba(255,255,255,.06);
+  cursor: pointer;
+  transition: background .18s, color .18s, border-color .18s, box-shadow .18s;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+.adm-nav-btn:hover {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border-left-color: rgba(233,185,30,.55);
+}
+
+/* ── Ícono con fondo oscuro ────────────────────────────────── */
+.adm-nav-btn__ico {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgba(0,0,0,.22);
+  box-sizing: border-box;
+}
+
+/* ── Texto ─────────────────────────────────────────────────── */
+.adm-nav-btn__label {
+  flex: 1;
+  line-height: 1.2;
+}
+
+/* ── Chevron ───────────────────────────────────────────────── */
+.adm-nav-btn__arrow {
+  font-size: 1.15rem;
+  line-height: 1;
+  color: rgba(255,255,255,.35);
+  transition: color .18s;
+}
+.adm-nav-btn:hover .adm-nav-btn__arrow {
+  color: rgba(255,255,255,.75);
+}
+
+/* ── Estado ACTIVO (página actual) ────────────────────────── */
+.adm-nav-btn--active {
+  background: #fff9f0 !important;          /* crema */
+  color: #760018 !important;               /* guinda */
+  border-left-color: #e9b91e !important;   /* dorado */
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(233,185,30,.18);
+}
+.adm-nav-btn--active .adm-nav-btn__ico {
+  background: rgba(118,0,24,.12);
+  color: #760018;
+}
+.adm-nav-btn--active .adm-nav-btn__arrow {
+  color: #e9b91e !important;
+}
+.adm-nav-btn--active:hover {
+  background: #fff5e8 !important;
+}
+
+/* ── Cerrar sesión ─────────────────────────────────────────── */
+.adm-nav-btn--logout {
+  color: rgba(255,255,255,.50);
+  background: rgba(255,255,255,.04);
+}
+.adm-nav-btn--logout:hover {
+  background: rgba(255,255,255,.10);
+  color: rgba(255,255,255,.85);
+  border-left-color: rgba(255,255,255,.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTENIDO (página hija via router-outlet)
+═══════════════════════════════════════════════════════════════ */
+.adm-page-content {
+  flex: 1;
+  min-width: 0;
+  background: #f4f5f7;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .adm-shell {
+    flex-direction: column;
+  }
+  .adm-sidebar {
+    flex: none;
+    width: 100%;
+    border-right: none;
+    border-bottom: 3px solid #e9b91e;
+    padding: 14px 10px 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.18);
+  }
+  .adm-sidebar__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .adm-nav-btn {
+    width: auto;
+    flex: 0 1 auto;
+    padding: 8px 12px;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 8px;
+    font-size: 0.80rem;
+  }
+  .adm-nav-btn__arrow { display: none; }
+  .adm-nav-btn--active {
+    border-bottom-color: #e9b91e !important;
+    border-left-color: transparent !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .adm-nav-btn__label { font-size: 0.76rem; }
+  .adm-nav-btn__ico   { width: 28px; height: 28px; border-radius: 7px; }
+}

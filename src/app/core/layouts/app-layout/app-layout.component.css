@@ -1,0 +1,223 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+/* ════════════════════
+   HEADER
+════════════════════ */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 0 clamp(22px, 6vw, 100px);
+  background: #fff;
+  border-bottom: 2.5px solid #e9b91e;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 95px;
+  height: 95px;
+  box-shadow: 0 2px 16px rgba(80, 0, 12, .08);
+}
+
+/* Marca */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-decoration: none;
+  color: #7a0012;
+  flex-shrink: 0;
+  transition: opacity .2s;
+}
+.brand:hover { opacity: .85; }
+.brand b {
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #7a0012;
+}
+.brand small {
+  display: block;
+  color: #7a8494;
+  margin-top: 2px;
+  font-size: .8rem;
+}
+.school-logo {
+  width: 52px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  animation: logoEntrance .7s cubic-bezier(.22, 1, .36, 1) both;
+  transform-origin: center bottom;
+  filter: drop-shadow(0 2px 6px rgba(122, 0, 18, .18));
+  transition: transform .25s ease, filter .25s ease;
+}
+.school-logo:hover {
+  transform: scale(1.1) rotate(-3deg);
+  filter: drop-shadow(0 4px 12px rgba(122, 0, 18, .35));
+}
+
+/* Animación de entrada: aparece desde abajo con un leve rebote */
+@keyframes logoEntrance {
+  0%   { opacity: 0; transform: translateY(14px) scale(.82); }
+  60%  { opacity: 1; transform: translateY(-4px) scale(1.05); }
+  80%  { transform: translateY(2px) scale(.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Pulso suave en loop para dar vida al logo */
+.school-logo {
+  animation: logoEntrance .7s cubic-bezier(.22, 1, .36, 1) both,
+             logoPulse 3.5s ease-in-out 1s infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% { filter: drop-shadow(0 2px 6px rgba(122, 0, 18, .18)); }
+  50%       { filter: drop-shadow(0 3px 10px rgba(233, 185, 30, .45)); }
+}
+
+/* Nav base */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+/* Link genérico */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #5a0010;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .88rem;
+  white-space: nowrap;
+  padding: 10px 14px;
+  border-radius: 8px;
+  position: relative;
+  transition: color .2s, background .2s;
+}
+.nav-link:hover {
+  color: #900014;
+  background: rgba(120, 0, 18, .05);
+}
+
+/* Ícono dentro del nav-link */
+.nav-ico {
+  flex-shrink: 0;
+  opacity: .75;
+  transition: opacity .2s;
+}
+.nav-link:hover .nav-ico,
+.nav-link--active .nav-ico { opacity: 1; }
+
+/* Estado activo: subrayado dorado como en la imagen */
+.nav-link--active {
+  color: #800012 !important;
+  font-weight: 800 !important;
+  background: transparent !important;
+}
+.nav-link--active::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 14px;
+  right: 14px;
+  height: 2.5px;
+  background: #e9b91e;
+  border-radius: 4px;
+}
+
+/* Separador vertical */
+.nav-separator {
+  width: 1px;
+  height: 22px;
+  background: #ddd0d0;
+  align-self: center;
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+/* Link institucional */
+.institution-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #5a6070 !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .84rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: background .2s, color .2s;
+}
+.institution-link:hover {
+  background: rgba(0, 0, 0, .04);
+  color: #800012 !important;
+}
+.ext-icon {
+  font-size: .85rem;
+  opacity: .7;
+}
+
+/* ════════════════════
+   MAIN
+════════════════════ */
+main { display: block; }
+
+/* ════════════════════
+   FOOTER
+════════════════════ */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 0 clamp(22px, 6vw, 100px);
+  background: linear-gradient(100deg, #390008, #57000B);
+  border-top: 2.5px solid #e9b91e;
+  color: #fffaf5;
+  height: 64px;
+  min-height: 64px;
+  font-size: .88rem;
+}
+footer b { font-weight: 700; }
+footer span { color: rgba(255, 247, 241, .7); }
+
+/* ════════════════════
+   RESPONSIVE
+════════════════════ */
+@media (max-width: 980px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 22px;
+    gap: 8px;
+    min-height: auto;
+  }
+  nav {
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    gap: 0;
+  }
+  .nav-separator { display: none; }
+}
+
+@media (max-width: 560px) {
+  .school-logo { width: 44px; height: 52px; }
+  .brand b { font-size: .97rem; }
+  .nav-link, .institution-link { font-size: .8rem; padding: 8px 10px; }
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 22px;
+    gap: 6px;
+  }
+}
