@@ -1,0 +1,116 @@
+<div class="page track-page">
+  <div class="page-heading">
+    <span class="eyebrow">Consulta segura</span>
+    <h1>Seguimiento de trámite</h1>
+    <p>
+      Ingresa el código que recibiste al registrar tu solicitud. Por privacidad,
+      solo se muestra el estado del trámite.
+    </p>
+  </div>
+
+  <section class="card track-search">
+    <form (ngSubmit)="search()" class="track-form">
+      <div class="field">
+        <label for="code">Código de seguimiento</label
+        ><input
+          id="code"
+          name="code"
+          [(ngModel)]="code"
+          placeholder="Ej. FUT-AB12CD34"
+          autocomplete="off"
+          required
+        />
+      </div>
+      <div class="actions">
+        <button class="button" [disabled]="loading">
+          {{ loading ? "Consultando…" : "Consultar estado" }}</button
+        ><button
+          type="button"
+          class="button secondary"
+          *ngIf="result || error || code"
+          (click)="clear()"
+        >
+          Nueva consulta
+        </button>
+      </div>
+    </form>
+    <div *ngIf="error" class="notice error-box" role="alert">{{ error }}</div>
+  </section>
+
+  <section *ngIf="result" class="card track-result" aria-live="polite">
+    <div class="track-head">
+      <div>
+        <small class="muted-label">Código de seguimiento</small>
+        <div class="track-code">
+          <strong>{{ result.trackingCode }}</strong
+          ><button type="button" class="link-btn" (click)="copy()">
+            {{ copied ? "¡Copiado!" : "Copiar" }}
+          </button>
+        </div>
+      </div>
+      <span class="status-badge" [ngClass]="info.css">{{ info.label }}</span>
+    </div>
+
+    <ol class="stepper" aria-label="Progreso del trámite">
+      <li
+        *ngFor="let s of steps; let i = index"
+        [ngClass]="[stepState(i), i === 2 ? info.css : '']"
+      >
+        <span class="step-dot">{{
+          stepState(i) === "done" ? "✓" : i + 1
+        }}</span>
+        <span class="step-label">{{
+          i === 1 && info.step === 1 && info.css === "st-observed"
+            ? "Observado"
+            : i === 2
+              ? finalLabel
+              : s
+        }}</span>
+      </li>
+    </ol>
+
+    <div class="track-message" [ngClass]="info.css">
+      <b>{{ info.label }}</b>
+      <p>{{ info.description }}</p>
+    </div>
+
+    <dl class="track-meta">
+      <div>
+        <dt>Fecha de registro</dt>
+        <dd>{{ result.createdAt | date: "dd/MM/yyyy, h:mm a" }}</dd>
+      </div>
+      <div *ngIf="result.updatedAt">
+        <dt>Última actualización</dt>
+        <dd>{{ result.updatedAt | date: "dd/MM/yyyy, h:mm a" }}</dd>
+      </div>
+      <div *ngIf="result.tipoTramite || result.solicitante">
+        <dt>Trámite</dt>
+        <dd>{{ result.tipoTramite || result.solicitante }}</dd>
+      </div>
+    </dl>
+
+    <div *ngIf="result.history?.length" class="timeline">
+      <h3>Historial del trámite</h3>
+      <ul>
+        <li *ngFor="let h of result.history">
+          <span class="tl-date">{{
+            h.changedAt | date: "dd/MM/yyyy h:mm a"
+          }}</span
+          ><span class="tl-text">{{ h.newStatus }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" class="button secondary" (click)="print()">
+        Imprimir constancia de seguimiento</button
+      ><a class="button secondary" routerLink="/fut/nuevo"
+        >Registrar otra solicitud</a
+      >
+    </div>
+    <p class="hint">
+      ¿Necesitas modificar o anular tu solicitud? Comunícate con la secretaría
+      de la institución, indicando tu código de seguimiento.
+    </p>
+  </section>
+</div>
