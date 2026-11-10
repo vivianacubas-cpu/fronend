@@ -1,0 +1,86 @@
+/* ── Navbar ────────────────────────────────────────────── */
+.nav-wrap{position:sticky;top:0;z-index:50;background:rgba(255,251,248,.96);backdrop-filter:blur(14px);border-bottom:2px solid #e8c84a}
+.navbar{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+
+/* ── Brand / Logo ──────────────────────────────────────── */
+.brand{display:flex;align-items:center;gap:13px;color:#55132c;text-decoration:none}
+
+/* Contenedor con anillo giratorio */
+.brand .logo-wrapper{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  width:66px;height:66px;flex-shrink:0;
+  border-radius:50%;
+  padding:3px;
+  background:conic-gradient(from 0deg,#f0c040 0%,#8e2047 25%,#f0c040 50%,#c0392b 75%,#f0c040 100%);
+  animation:ring-spin 4s linear infinite;
+  filter:drop-shadow(0 0 8px #f0c04088);
+}
+
+/* Fondo blanco interior que "aísla" el logo del anillo */
+.brand .logo-wrapper::after{
+  content:'';
+  position:absolute;
+  inset:3px;
+  border-radius:50%;
+  background:#fff8f0;
+  z-index:0;
+}
+
+/* El escudo */
+.brand .logo-wrapper img{
+  position:relative;z-index:1;
+  width:54px;height:54px;
+  object-fit:contain;
+  animation:
+    escudo-entrada .8s cubic-bezier(.34,1.56,.64,1) both,
+    escudo-float   4s ease-in-out 1s infinite;
+  transition:transform .3s ease;
+}
+
+/* Hover: escudo salta y brilla */
+.brand .logo-wrapper:hover{
+  filter:drop-shadow(0 0 14px #f0c040cc);
+}
+.brand .logo-wrapper:hover img{
+  animation:escudo-pulse .5s ease-in-out;
+}
+
+/* Textos del brand */
+.brand strong{display:block;font-size:15px;letter-spacing:.05em;font-weight:800;color:#55132c}
+.brand small{display:block;font-size:10px;color:#7d6870;margin-top:2px;letter-spacing:.04em}
+
+/* ── Links ─────────────────────────────────────────────── */
+.links{display:flex;align-items:center;gap:24px}
+.links>a:not(.nav-cta){color:#493b40;font-size:14px;font-weight:600}
+.links>a:not(.nav-cta):hover{color:#8e2047}
+.nav-cta{background:#8e2047;color:white!important;padding:12px 17px;border-radius:10px;box-shadow:0 8px 18px #8e20472b}
+.nav-cta span{margin-left:8px}
+
+/* ── Keyframes ─────────────────────────────────────────── */
+@keyframes ring-spin{
+  from{background:conic-gradient(from 0deg,#f0c040 0%,#8e2047 25%,#f0c040 50%,#c0392b 75%,#f0c040 100%)}
+  to  {background:conic-gradient(from 360deg,#f0c040 0%,#8e2047 25%,#f0c040 50%,#c0392b 75%,#f0c040 100%)}
+}
+@keyframes escudo-entrada{
+  0%  {opacity:0;transform:scale(.3) rotate(-20deg)}
+  100%{opacity:1;transform:scale(1)  rotate(0deg)}
+}
+@keyframes escudo-float{
+  0%,100%{transform:translateY(0)   scale(1)}
+  50%    {transform:translateY(-4px) scale(1.05)}
+}
+@keyframes escudo-pulse{
+  0%  {transform:scale(1)}
+  40% {transform:scale(1.18) rotate(6deg)}
+  100%{transform:scale(1)  rotate(0deg)}
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media(max-width:800px){
+  .links>a:not(.nav-cta){display:none}
+  .navbar{padding:0 18px}
+  .nav-cta{padding:10px 13px}
+  .brand .logo-wrapper{width:54px;height:54px}
+  .brand .logo-wrapper img{width:44px;height:44px}
+}
