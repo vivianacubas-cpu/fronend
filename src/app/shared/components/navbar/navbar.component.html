@@ -1,0 +1,36 @@
+<nav class="navbar" aria-label="Navegación principal">
+  <a routerLink="/" class="navbar__brand">
+    <img
+      class="navbar__logo"
+      src="assets/escudo-alfonso-ugarte.png"
+      alt="Escudo I. E. N.° 20191 Alfonso Ugarte"
+    />
+    <span>
+      <b>I. E. N.° 20191</b>
+      <small>"Alfonso Ugarte" – San Vicente</small>
+    </span>
+  </a>
+
+  <ul class="navbar__links" role="list">
+    <li>
+      <a routerLink="/" routerLinkActive="navbar__link--active" [routerLinkActiveOptions]="{exact:true}" class="navbar__link">
+        Inicio
+      </a>
+    </li>
+    <li>
+      <a routerLink="/fut/nuevo" routerLinkActive="navbar__link--active" class="navbar__link">
+        Registrar FUT
+      </a>
+    </li>
+    <li>
+      <a routerLink="/seguimiento" routerLinkActive="navbar__link--active" class="navbar__link">
+        Seguimiento
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/tramites" routerLinkActive="navbar__link--active" class="navbar__link">
+        Acceso administrativo
+      </a>
+    </li>
+  </ul>
+</nav>

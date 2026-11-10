@@ -1,0 +1,30 @@
+@if (open) {
+  <div class="cm-backdrop" role="dialog" aria-modal="true" [attr.aria-labelledby]="'cm-title-' + _id">
+    <div class="cm-card">
+      <h2 class="cm-title" [id]="'cm-title-' + _id">{{ title }}</h2>
+      <p class="cm-message">{{ message }}</p>
+      <div class="cm-actions">
+        <button
+          type="button"
+          class="cm-btn cm-btn--cancel"
+          (click)="cancel.emit()"
+          [disabled]="loading"
+        >
+          {{ cancelLabel }}
+        </button>
+        <button
+          type="button"
+          class="cm-btn cm-btn--confirm"
+          [class.cm-btn--danger]="danger"
+          (click)="confirm.emit()"
+          [disabled]="loading"
+        >
+          @if (loading) {
+            <span class="cm-spinner" aria-hidden="true"></span>
+          }
+          {{ confirmLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
