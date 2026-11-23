@@ -61,13 +61,13 @@ cd ASE252S3_T05-fe
 
 Instalar dependencias:
 
-npm install
+# npm install
 
 6. Ejecución del proyecto
 
 Iniciar el servidor de desarrollo:
 
-ng serve
+# ng serve
 
 Abrir en el navegador:
 

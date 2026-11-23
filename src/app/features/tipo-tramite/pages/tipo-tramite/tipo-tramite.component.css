@@ -85,6 +85,129 @@
 .tt-btn--outline { background: #fff; color: #760018; border-color: #c8b0b4; }
 .tt-btn--outline:hover { background: #fff5f5; border-color: #760018; }
 
+/* ── Botón Ver eliminados / Ver activos ── */
+.tt-btn--danger-outline {
+  background: #fff;
+  color: #760018;
+  border-color: #760018;
+  position: relative;
+  overflow: hidden;
+  transition: background .2s, color .2s, border-color .2s, transform .15s, box-shadow .15s;
+}
+.tt-btn--danger-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #c0001e 0%, #760018 100%);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.tt-btn--danger-outline span,
+.tt-btn--danger-outline svg { position: relative; z-index: 1; }
+.tt-btn--danger-outline:hover::before { opacity: 1; }
+.tt-btn--danger-outline:hover {
+  color: #fff;
+  border-color: #760018;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(118,0,24,.30);
+}
+.tt-btn--danger-outline:active { transform: translateY(0); box-shadow: none; }
+
+/* ── Botón Actualizar ── */
+.tt-btn--refresh {
+  background: #fff;
+  color: #1a50c0;
+  border-color: #bcd0f8;
+  position: relative;
+  overflow: hidden;
+  transition: background .2s, color .2s, border-color .2s, transform .15s, box-shadow .15s;
+}
+.tt-btn--refresh::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #2563eb 0%, #1a3fa0 100%);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.tt-btn--refresh span,
+.tt-btn--refresh svg { position: relative; z-index: 1; }
+.tt-btn--refresh:hover::before { opacity: 1; }
+.tt-btn--refresh:hover {
+  color: #fff;
+  border-color: #1a50c0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(26,80,192,.28);
+}
+.tt-btn--refresh:active { transform: translateY(0); box-shadow: none; }
+
+@keyframes tt-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.tt-btn--refresh[disabled] svg { animation: tt-spin .8s linear infinite; }
+.tt-btn--refresh[disabled] { opacity: .7; cursor: wait; }
+.tt-btn--pdf {
+  background: linear-gradient(135deg, #c0001e 0%, #760018 100%);
+  color: #fff;
+  border-color: #760018;
+  box-shadow: 0 3px 12px rgba(118,0,24,.30);
+  position: relative;
+  overflow: hidden;
+}
+.tt-btn--pdf::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform .45s ease;
+}
+.tt-btn--pdf:hover::after { transform: translateX(100%); }
+.tt-btn--pdf:hover {
+  background: linear-gradient(135deg, #e0002a 0%, #9a0020 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(118,0,24,.40);
+}
+.tt-btn--pdf:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(118,0,24,.25); }
+
+/* ── Botón Exportar Excel ── */
+.tt-btn--excel {
+  background: linear-gradient(135deg, #1e7a3a 0%, #145228 100%);
+  color: #fff;
+  border-color: #145228;
+  box-shadow: 0 3px 12px rgba(20,82,40,.30);
+  position: relative;
+  overflow: hidden;
+}
+.tt-btn--excel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform .45s ease;
+}
+.tt-btn--excel:hover::after { transform: translateX(100%); }
+.tt-btn--excel:hover {
+  background: linear-gradient(135deg, #25a04c 0%, #1a6b35 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(20,82,40,.40);
+}
+.tt-btn--excel:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(20,82,40,.25); }
+
+/* animación de pulso cuando está exportando */
+@keyframes tt-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .6; }
+}
+.tt-btn--pdf[disabled],
+.tt-btn--excel[disabled] {
+  animation: tt-pulse 1.2s ease-in-out infinite;
+  cursor: wait;
+  opacity: 1;
+}
+
 /* ── Filtro buscar ── */
 .tt-filters {
   display: flex;

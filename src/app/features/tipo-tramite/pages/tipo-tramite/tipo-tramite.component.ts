@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TipoTramiteService } from '../../services/tipo-tramite.service';
 import { TipoTramite, TipoTramiteEntrada } from '../../interfaces/tipo-tramite.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ExportColumn, ExportService } from '../../../../core/services/export.service';
 
 type Vista = 'listado' | 'formulario';
 
@@ -43,7 +44,13 @@ export class TipoTramiteComponent {
         estado:             [true as boolean, [Validators.required]],
     });
 
-    constructor(private fb: FormBuilder, private servicio: TipoTramiteService, private auth: AuthService, private router: Router) {
+    constructor(
+        private fb: FormBuilder,
+        private servicio: TipoTramiteService,
+        private auth: AuthService,
+        private router: Router,
+        private exportService: ExportService,
+    ) {
         this.cargar();
     }
 
@@ -212,6 +219,45 @@ export class TipoTramiteComponent {
             }
         });
     }
+    // ── Exportación PDF / Excel ───────────────────────────────────────────────
+    exportando = false;
+
+    async exportar(formato: 'pdf' | 'excel'): Promise<void> {
+        if (!this.filtered.length) return;
+        this.exportando = true;
+        this.error = '';
+        const opciones = {
+            title: this.mostrarInactivos ? 'Tipos de trámite eliminados' : 'Tipos de trámite activos',
+            fileName: this.mostrarInactivos ? 'tipos_tramite_eliminados' : 'tipos_tramite',
+            columns: this.columnasExport,
+            rows: this.filtered,
+        };
+        try {
+            if (formato === 'pdf') await this.exportService.exportPdf(opciones);
+            else await this.exportService.exportExcel(opciones);
+        } catch {
+            this.error = 'No se pudo generar el archivo de exportación.';
+        } finally {
+            this.exportando = false;
+        }
+    }
+
+    private readonly columnasExport: ExportColumn<TipoTramite>[] = [
+        { header: 'Código', value: r => r.codigo, width: 10 },
+        { header: 'Nombre', value: r => r.nombre, width: 28 },
+        { header: 'Categoría', value: r => r.categoria, width: 16 },
+        { header: 'Descripción', value: r => r.descripcion, width: 40 },
+        { header: 'Requisitos', value: r => r.requisitos, width: 40 },
+        { header: 'Días', value: r => r.plazoEstimadoDias, width: 7 },
+        { header: 'Docs.', value: r => !!r.requiereDocumentos, width: 7 },
+        { header: 'Vigente', value: r => ExportService.fecha(r.vigentDesde), width: 12 },
+        { header: 'Estado', value: r => r.estado ? 'ACTIVO' : 'INACTIVO', width: 10 },
+        { header: 'F. registro', value: r => ExportService.fecha(r.fechaRegistro), width: 12 },
+        { header: 'F. actualiz.', value: r => ExportService.fecha(r.fechaActualizacion), width: 12 },
+        { header: 'F. eliminac.', value: r => ExportService.fecha(r.fechaEliminacion), width: 12 },
+        { header: 'F. restauración', value: r => ExportService.fecha(r.fechaRestauracion), width: 14 },
+    ];
+
 
     // ── Validación de campo ───────────────────────────────────────────────────
     invalido(campo: string): boolean {

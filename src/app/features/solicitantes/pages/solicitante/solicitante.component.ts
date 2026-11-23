@@ -12,6 +12,7 @@ import {
 } from '../../../../shared/interfaces/solicitante.model';
 import { SolicitanteService } from '../../services/solicitante.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ExportColumn, ExportService } from '../../../../core/services/export.service';
 
 type Vista = 'listado' | 'formulario' | 'detalle';
 
@@ -49,7 +50,12 @@ export class SolicitanteComponent implements OnInit, OnDestroy {
 
     private subs = new Subscription();
 
-    constructor(private service: SolicitanteService, private auth: AuthService, private router: Router) {}
+    constructor(
+        private service: SolicitanteService,
+        private auth: AuthService,
+        private router: Router,
+        private exportService: ExportService,
+    ) {}
 
     ngOnInit(): void {
         this.subs.add(this.service.tiposDocumento().subscribe({ next: t => this.tiposDocumento = t }));
@@ -227,6 +233,49 @@ export class SolicitanteComponent implements OnInit, OnDestroy {
             },
         });
     }
+    // ── Exportación PDF / Excel ───────────────────────────────────────────────
+    exportando = false;
+
+    async exportar(formato: 'pdf' | 'excel'): Promise<void> {
+        if (!this.filtered.length) return;
+        this.exportando = true;
+        this.error = '';
+        const opciones = {
+            title: this.mostrarInactivos ? 'Solicitantes eliminados' : 'Lista de solicitantes',
+            fileName: this.mostrarInactivos ? 'solicitantes_eliminados' : 'solicitantes',
+            columns: this.columnasExport,
+            rows: this.filtered,
+        };
+        try {
+            if (formato === 'pdf') await this.exportService.exportPdf(opciones);
+            else await this.exportService.exportExcel(opciones);
+        } catch {
+            this.error = 'No se pudo generar el archivo de exportación.';
+        } finally {
+            this.exportando = false;
+        }
+    }
+
+    private readonly columnasExport: ExportColumn<Solicitante>[] = [
+        { header: '#', value: (_, i) => i + 1, width: 5 },
+        { header: 'Tipo doc.', value: r => this.tipoDocumentoLabel(r), width: 10 },
+        { header: 'N° documento', value: r => r.numeroDocumento, width: 14 },
+        { header: 'Ap. paterno', value: r => r.apellidoPaterno, width: 16 },
+        { header: 'Ap. materno', value: r => r.apellidoMaterno, width: 16 },
+        { header: 'Nombres', value: r => r.nombres, width: 20 },
+        { header: 'Distrito', value: r => this.ubigeoDistrito(r), width: 18 },
+        { header: 'Provincia', value: r => this.ubigeoProvincia(r), width: 14 },
+        { header: 'Departamento', value: r => this.ubigeoDepartamento(r), width: 14 },
+        { header: 'Dirección', value: r => r.direccion, width: 28 },
+        { header: 'Teléfono', value: r => r.telefono, width: 12 },
+        { header: 'Correo', value: r => r.correo, width: 28 },
+        { header: 'Estado', value: () => this.mostrarInactivos ? 'INACTIVO' : 'ACTIVO', width: 10 },
+        { header: 'F. registro', value: r => ExportService.fecha(r.fechaRegistro), width: 12 },
+        { header: 'F. actualiz.', value: r => ExportService.fecha(r.fechaActualizacion), width: 12 },
+        { header: 'F. eliminac.', value: r => ExportService.fecha(r.fechaEliminacion), width: 12 },
+        { header: 'F. restaurac.', value: r => ExportService.fecha(r.fechaRestauracion), width: 13 },
+    ];
+
 
     // ── Helpers de presentación ───────────────────────────────────────────────
     nombreCompleto(r: Solicitante): string {
